@@ -18,10 +18,11 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const navLinks = [
+  const navLinks: { label: string; href: string; external: boolean; active?: boolean }[] = [
     { label: "官网主页", href: "https://lazzor.com", external: true },
     { label: "探索办公空间", href: "https://lazzor.com/workspace", external: true },
-    { label: "AI 云工位", href: "#", external: false, active: true },
+    { label: "服务矩阵", href: "#services", external: false },
+    { label: "费用测算", href: "#calculator", external: false },
     { label: "光伏系统集成", href: "https://colasola.com", external: true },
     { label: "商业决策沙盘", href: "https://ai.lazzor.com", external: true },
   ];

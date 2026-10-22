@@ -5,6 +5,8 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import CloudServices from "@/components/CloudServices";
+import CloudPricingCalculator from "@/components/CloudPricingCalculator";
 import {
   Cpu,
   Zap,
@@ -30,12 +32,11 @@ import {
 export default function CloudHomePage() {
   const [currentBg, setCurrentBg] = useState(0);
   const [selectedWorkload, setSelectedWorkload] = useState(0);
-  const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [trialForm, setTrialForm] = useState({
     name: "",
     contact: "",
-    plan: "AI Workstation Pro (RTX 4090)",
+    plan: "轻量共享型云电脑 (微主机)",
     usage: "",
   });
 
@@ -120,61 +121,6 @@ export default function CloudHomePage() {
     },
   ];
 
-  const plans = [
-    {
-      name: "Cloud Dev Basic",
-      badge: "跨境运营与轻量开发",
-      monthlyPrice: "1,800",
-      annualPrice: "1,440",
-      description: "适合出海跨境电商多账号矩阵运营、远程日常开发及轻量自动化任务。",
-      specs: [
-        "8 核心高频 vCPU",
-        "16 GB DDR5 内存",
-        "100 GB NVMe 高速固态",
-        "1 个专属海外原生静态商业 IP",
-        "中泰 IPLC 专线 (<18ms)",
-        "基础快照备份与 99.9% 可用性",
-      ],
-      popular: false,
-    },
-    {
-      name: "AI Workstation Pro",
-      badge: "主力推荐 · 视觉设计与出图",
-      monthlyPrice: "4,500",
-      annualPrice: "3,600",
-      description: "搭载顶级独立 GPU，专为 ComfyUI 视觉设计师、AI 视频合成与大模型推理打造。",
-      specs: [
-        "NVIDIA RTX 4090 (24GB 显存)",
-        "16 核心高性能 vCPU",
-        "64 GB DDR5 极速内存",
-        "1 TB NVMe 企业级存储",
-        "预装 ComfyUI + 全套模型节点库",
-        "预装 Ollama / vLLM 推理引擎",
-        "Parsec / Moonlight 60FPS 极速串流",
-        "专属独立千兆带宽保障",
-      ],
-      popular: true,
-    },
-    {
-      name: "Enterprise Ultra",
-      badge: "企业旗舰 · 私有化大模型微调",
-      monthlyPrice: "12,800",
-      annualPrice: "10,240",
-      description: "企业级高密度算力集群节点，支撑百亿参数大语言模型微调、私有知识库与复杂 Agent 调度。",
-      specs: [
-        "NVIDIA A100 / H100 (80GB 显存)",
-        "32 核心企业级处理器",
-        "128 GB ECC 容错内存",
-        "2 TB PCIe 4.0 NVMe 阵列",
-        "支持私有化 LLM 微调与持续训练",
-        "专属万兆局域网互联 & 专人运维响应",
-        "99.99% 企业级 SLA 赔付保障",
-        "清迈 AI 中心实体机房现场参观支持",
-      ],
-      popular: false,
-    },
-  ];
-
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setFormSubmitted(true);
@@ -183,7 +129,7 @@ export default function CloudHomePage() {
       setTrialForm({
         name: "",
         contact: "",
-        plan: "AI Workstation Pro (RTX 4090)",
+        plan: "轻量共享型云电脑 (微主机)",
         usage: "",
       });
     }, 4000);
@@ -265,18 +211,18 @@ export default function CloudHomePage() {
                 className="flex flex-wrap items-center gap-4"
               >
                 <a
-                  href="#trial"
+                  href="#calculator"
                   className="px-6 py-3 rounded-full bg-neutral-950 hover:bg-neutral-800 dark:bg-white dark:hover:bg-neutral-100 text-white dark:text-neutral-950 text-sm font-medium transition-all shadow-sm hover:scale-[1.02] flex items-center gap-2"
                 >
-                  <span>立即申请免费开通试用</span>
+                  <span>在线选定与测算费用</span>
                   <ArrowRight className="w-4 h-4" />
                 </a>
 
                 <a
-                  href="#plans"
+                  href="#services"
                   className="px-6 py-3 rounded-full border border-neutral-300 hover:border-neutral-400 dark:border-neutral-700 dark:hover:border-neutral-600 bg-white/60 dark:bg-neutral-900/60 backdrop-blur-md text-neutral-800 dark:text-neutral-200 text-sm font-medium transition-all"
                 >
-                  查看算力机型方案
+                  查看九大服务矩阵
                 </a>
 
                 <a
@@ -464,121 +410,11 @@ export default function CloudHomePage() {
           </div>
         </section>
 
-        {/* Pricing / Hardware Plans */}
-        <section id="plans" className="py-24 bg-white dark:bg-[#070709] border-b border-neutral-200 dark:border-neutral-800">
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-              <div>
-                <span className="text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400 font-mono">
-                  Hardware Specifications &amp; Pricing
-                </span>
-                <h2 className="text-2xl sm:text-3xl font-light text-neutral-950 dark:text-white tracking-tight mt-1">
-                  灵活透明的算力规格方案
-                </h2>
-                <p className="text-sm text-neutral-600 dark:text-neutral-400 font-light mt-1">
-                  支持按月弹性续订或年度合约，支持人民币、泰铢、USDT 及国际电汇结算。
-                </p>
-              </div>
+        {/* 9 Core Services Matrix (Mirroring workspace Services format) */}
+        <CloudServices />
 
-              {/* Billing Toggle */}
-              <div className="flex items-center gap-2 p-1 rounded-full bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 self-start md:self-auto">
-                <button
-                  onClick={() => setBillingCycle("monthly")}
-                  className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all ${
-                    billingCycle === "monthly"
-                      ? "bg-white dark:bg-neutral-800 text-neutral-950 dark:text-white shadow-xs"
-                      : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-950"
-                  }`}
-                >
-                  按月付费
-                </button>
-                <button
-                  onClick={() => setBillingCycle("annual")}
-                  className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 ${
-                    billingCycle === "annual"
-                      ? "bg-white dark:bg-neutral-800 text-neutral-950 dark:text-white shadow-xs"
-                      : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-950"
-                  }`}
-                >
-                  <span>年度合约</span>
-                  <span className="px-1.5 py-0.2 rounded text-[10px] font-semibold bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400">
-                    立省 20%
-                  </span>
-                </button>
-              </div>
-            </div>
-
-            {/* Plans Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {plans.map((plan) => (
-                <div
-                  key={plan.name}
-                  className={`relative p-8 rounded-3xl flex flex-col justify-between transition-all ${
-                    plan.popular
-                      ? "bg-neutral-50 dark:bg-neutral-900/80 border-2 border-neutral-950 dark:border-white shadow-md"
-                      : "bg-white dark:bg-neutral-950/40 border border-neutral-200 dark:border-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-700"
-                  }`}
-                >
-                  {plan.popular && (
-                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 text-[11px] font-semibold tracking-wide">
-                      MOST POPULAR
-                    </div>
-                  )}
-
-                  <div>
-                    <span className="text-xs font-mono text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
-                      {plan.badge}
-                    </span>
-                    <h3 className="text-xl font-medium text-neutral-950 dark:text-white mt-1 mb-2">
-                      {plan.name}
-                    </h3>
-                    <p className="text-xs text-neutral-600 dark:text-neutral-400 font-light leading-relaxed mb-6">
-                      {plan.description}
-                    </p>
-
-                    <div className="flex items-baseline gap-1.5 mb-6 pb-6 border-b border-neutral-200 dark:border-neutral-800">
-                      <span className="text-3xl sm:text-4xl font-light text-neutral-950 dark:text-white tracking-tight">
-                        ¥{billingCycle === "monthly" ? plan.monthlyPrice : plan.annualPrice}
-                      </span>
-                      <span className="text-xs text-neutral-500 font-mono">/ 月</span>
-                      {billingCycle === "annual" && (
-                        <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-mono ml-2">
-                          年付计费
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="space-y-3 mb-8">
-                      <span className="text-[11px] uppercase font-mono tracking-wider text-neutral-500">
-                        配置包含
-                      </span>
-                      {plan.specs.map((spec, i) => (
-                        <div key={i} className="flex items-start gap-2.5 text-xs text-neutral-700 dark:text-neutral-300">
-                          <Check className="w-3.5 h-3.5 text-neutral-950 dark:text-white shrink-0 mt-0.5" />
-                          <span>{spec}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <a
-                    href="#trial"
-                    onClick={() => {
-                      setTrialForm((prev) => ({ ...prev, plan: plan.name }));
-                    }}
-                    className={`w-full py-3 rounded-full text-center text-xs sm:text-sm font-medium transition-all ${
-                      plan.popular
-                        ? "bg-neutral-950 hover:bg-neutral-800 dark:bg-white dark:hover:bg-neutral-100 text-white dark:text-neutral-950 shadow-sm"
-                        : "bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-neutral-900 dark:text-white"
-                    }`}
-                  >
-                    选择并申请试用
-                  </a>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+        {/* Interactive Pricing & Solution Configurator (Mirroring workspace PricingCalculator format) */}
+        <CloudPricingCalculator />
 
         {/* Physical Building & Green Energy Advantage */}
         <section className="py-24 bg-[#f8f8fa] dark:bg-[#0c0c0e] border-b border-neutral-200 dark:border-neutral-800">
@@ -752,10 +588,16 @@ export default function CloudHomePage() {
                       onChange={(e) => setTrialForm({ ...trialForm, plan: e.target.value })}
                       className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-sm text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white"
                     >
-                      <option value="Cloud Dev Basic">Cloud Dev Basic (8 vCPU / 16GB / 独立原生IP)</option>
-                      <option value="AI Workstation Pro (RTX 4090)">AI Workstation Pro (NVIDIA RTX 4090 24GB)</option>
-                      <option value="Enterprise Ultra (A100/H100)">Enterprise Ultra (A100 / H100 80GB 集群)</option>
-                      <option value="定制专属私有化集群">定制专属私有化算力集群</option>
+                      <option value="轻量共享型云电脑 (微主机)">轻量共享型云电脑 (微主机)</option>
+                      <option value="Mac 专属云工作站 (1V1 Apple Silicon)">Mac 专属云工作站 (1V1 Apple Silicon)</option>
+                      <option value="物理设备/主机机房托管">物理设备/主机机房托管</option>
+                      <option value="泰国原生实体卡短信验证码校验">泰国原生实体卡短信验证码校验</option>
+                      <option value="独立海外原生静态商业 IP">独立海外原生静态商业 IP</option>
+                      <option value="泰国本地小额代充与代缴">泰国本地小额代充与代缴</option>
+                      <option value="全球大模型 API 聚合中转网关">全球大模型 API 聚合中转网关</option>
+                      <option value="NVIDIA H200 顶级 GPU 算力按需租用">NVIDIA H200 顶级 GPU 算力按需租用</option>
+                      <option value="企业及团队出海综合合规商业落地">企业及团队出海综合合规商业落地</option>
+                      <option value="组合配置定制与整体方案">组合配置定制与整体方案 (详见测算清单)</option>
                     </select>
                   </div>
 
