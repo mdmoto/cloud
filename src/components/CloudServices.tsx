@@ -129,9 +129,9 @@ export default function CloudServices() {
       badge: "AI 算力通道",
       billingType: "按量计费",
       title: "全球大模型 API 聚合中转网关 (AI API Relay)",
-      summary: "高可用聚合中转通道，全面支持 Claude 3.5、OpenAI GPT-4o、DeepSeek-V3 等顶尖大模型。免翻墙按量计费。",
+      summary: "高可用聚合中转通道，全面支持 Claude 5.5 / 5.6、OpenAI GPT-6、DeepSeek 等顶尖大模型。免翻墙按量计费。",
       icon: <Bot className="w-5 h-5 text-blue-600" />,
-      specs: ["兼容 OpenAI 官方接口标准", "聚合 Claude / GPT-4o / DeepSeek", "毫秒级专线直连欧美服务器", "企业级高并发 QPS 弹性保障"],
+      specs: ["兼容 OpenAI / Anthropic 官方接口标准", "聚合 Claude 5.5/5.6 · GPT-6 · DeepSeek", "毫秒级专线直连欧美服务器", "企业级高并发 QPS 弹性保障"],
       scenarios: ["国内应用免翻墙极速调用海外最新模型", "企业 AI 智能体 (Agent) 与知识库 RAG 构建", "多模型负载均衡与自动容灾故障切换", "团队集中用量监控、配额切分与成本控制"],
       highlights: [
         "官方正版 API 接口通道，不封号不掉线",

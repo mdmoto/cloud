@@ -5,6 +5,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import CloudTrustFeatures from "@/components/CloudTrustFeatures";
 import CloudServices from "@/components/CloudServices";
 import CloudPricingCalculator from "@/components/CloudPricingCalculator";
 import {
@@ -63,7 +64,7 @@ export default function CloudHomePage() {
       stack: "vLLM · Ollama · PyTorch 2.4 · CUDA 12.4 · TensorRT-LLM · DeepSpeed",
       speed: "180+ tokens/sec",
       description:
-        "一键部署高吞吐量本地推理引擎与轻量微调环境，支持 Llama 3、DeepSeek、Qwen 2.5 等开源基座模型私有化部署与企业级 RAG 知识检索流水线。",
+        "一键部署高吞吐量本地推理引擎与轻量微调环境，聚合 GPT-6、Claude 5.5/5.6 顶尖模型接口，并支持 Llama 4/3.3、DeepSeek、Qwen 3 等开源基模私有化部署与企业级 RAG 知识检索流水线。",
       features: [
         "预装 vLLM / Ollama / FastChat 开箱即用",
         "挂载 HuggingFace / ModelScope 极速镜像加速源",
@@ -176,7 +177,7 @@ export default function CloudHomePage() {
                 className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-neutral-100/90 dark:bg-neutral-800/90 border border-neutral-200/80 dark:border-neutral-700/80 text-[12px] font-medium text-neutral-800 dark:text-neutral-200 backdrop-blur-md mb-6 shadow-xs"
               >
                 <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span>Chiang Mai AI Center · 自建算力集群与专线枢纽</span>
+                <span>Google 官方认证实体 · 自建算力集群与数百级静态 IP 枢纽</span>
               </motion.div>
 
               {/* Title */}
@@ -298,6 +299,9 @@ export default function CloudHomePage() {
             </motion.div>
           </div>
         </section>
+
+        {/* Four Core Trust Pillars & Compliance Advantages */}
+        <CloudTrustFeatures />
 
         {/* Workload Engines & Stack */}
         <section className="py-24 bg-[#f8f8fa] dark:bg-[#0c0c0e] border-b border-neutral-200 dark:border-neutral-800">
@@ -450,6 +454,16 @@ export default function CloudHomePage() {
                     </div>
                     <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed">
                       屋顶大功率光伏系统源源不断输出清洁电力，PUE 达 1.15，助您达成 ESG 碳减排指标。
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 sm:col-span-2">
+                    <div className="font-medium text-sm text-neutral-950 dark:text-white mb-1 flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                      <span>Google 官方商家认证实体大厦</span>
+                    </div>
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed">
+                      已通过 Google 官方商家实名认证与 Google 地图官方收录。真实 1600㎡ 五层自建大厦与中泰工程团队驻场，支持全球客户实地到访考察。
                     </p>
                   </div>
                 </div>
@@ -656,6 +670,42 @@ export default function CloudHomePage() {
             <div className="space-y-4">
               <div className="p-6 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800">
                 <h4 className="text-base font-medium text-neutral-950 dark:text-white mb-2">
+                  Q: 为什么使用你们的云工位访问 ChatGPT (GPT-6) 与 Claude (5.5/5.6) 极低封号风险？
+                </h4>
+                <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 font-light leading-relaxed">
+                  A: 绝大多数国内出海账号被封均因使用数据中心脏 IP、公共梯子频繁跳跃节点或软硬件指纹异常。清迈 AI 中心作为海外正规合法 AI 研发实体，所有网络流量由自建机房原生商业专线直连欧美骨干网，分配专属干净静态 IP（Fraud Score 恒为 0）。完全契合 OpenAI (GPT-6) 与 Anthropic (Claude 5.5/5.6) 的属地与网络合规风控审查标准，从底层彻底终结封号与“降智”限制。
+                </p>
+              </div>
+
+              <div className="p-6 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800">
+                <h4 className="text-base font-medium text-neutral-950 dark:text-white mb-2">
+                  Q: 你们支持哪些付款方式？能否开具商业发票进行企业报销？
+                </h4>
+                <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 font-light leading-relaxed">
+                  A: 支持全球多元化灵活结算：人民币（微信支付 / 支付宝 / 国内对公转账）、泰铢（PromptPay 极速扫码 / 泰国本地对公）、美金电汇（USD Wire / ACH）以及加密货币（USDT / USDC）。支持个人与公司对公付款，均可开具正规税务商业发票 (Tax Invoice) 或中英双语租赁协议，报销做账合规无忧。
+                </p>
+              </div>
+
+              <div className="p-6 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800">
+                <h4 className="text-base font-medium text-neutral-950 dark:text-white mb-2">
+                  Q: 你们的“数百级静态 IP 池”是如何管理的？是否会出现连带关联？
+                </h4>
+                <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 font-light leading-relaxed">
+                  A: 我们直签并自主储备了数百个独立的海外原生商业与住宅 ASN 静态 IP，绝非转售二手脏池。我们实行严格的“一人一机一专线”独立隔离绑定制度，每个 IP 在交付前 Fraud Score 均为 0，杜绝任何多租户共用与店铺交叉感染。
+                </p>
+              </div>
+
+              <div className="p-6 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800">
+                <h4 className="text-base font-medium text-neutral-950 dark:text-white mb-2">
+                  Q: 清迈 AI 中心线下大楼是真实的吗？支持实地参访吗？
+                </h4>
+                <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 font-light leading-relaxed">
+                  A: 100% 真实！清迈 AI 中心坐落于清迈城市核心区 Nong Hoi，为拥有 1600㎡ 建筑面积的独立 5 层科技大厦，包含挑高实体工位、自建高密算力机房与 ColaSola 屋顶光伏系统。大楼已通过 Google 官方商家实名认证（在 Google 地图搜索“Chiang Mai AI Center”即可查看全景街景与认证信息），团队常驻现场，随时欢迎预约实地参观与技术考察！
+                </p>
+              </div>
+
+              <div className="p-6 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800">
+                <h4 className="text-base font-medium text-neutral-950 dark:text-white mb-2">
                   Q: 国内连接清迈云工位的延迟如何？操作会卡顿吗？
                 </h4>
                 <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 font-light leading-relaxed">
@@ -665,28 +715,10 @@ export default function CloudHomePage() {
 
               <div className="p-6 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800">
                 <h4 className="text-base font-medium text-neutral-950 dark:text-white mb-2">
-                  Q: 提供的海外原生静态商业 IP 是否安全？会被平台封禁吗？
-                </h4>
-                <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 font-light leading-relaxed">
-                  A: 每个分配的静态商业 IP 均为我们直采的一手海外商业或住宅 ASN，绝非公共代理池或脏 IP。Fraud Score 欺诈检测为 0，专线专享，完美适配 TikTok、亚马逊、Shopify 等严风控出海平台。
-                </p>
-              </div>
-
-              <div className="p-6 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800">
-                <h4 className="text-base font-medium text-neutral-950 dark:text-white mb-2">
                   Q: 如果我们团队入驻清迈实体大楼，如何与云工位算力协同？
                 </h4>
                 <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 font-light leading-relaxed">
                   A: 这是我们的核心独特优势！清迈 AI 中心 1-5 楼办公空间的工位直接与自建机房通过物理万兆局域网互通，桌面前端即可千兆直连算力集群，无公网传输损耗；外出时自动切入专线安全接入。
-                </p>
-              </div>
-
-              <div className="p-6 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800">
-                <h4 className="text-base font-medium text-neutral-950 dark:text-white mb-2">
-                  Q: 算力实例如何计费？支持哪些支付方式？
-                </h4>
-                <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 font-light leading-relaxed">
-                  A: 支持按月弹性订阅或年度合约（年付享 8 折特惠）。结算支持微信支付、支付宝、泰铢 PromptPay / 银行对公转账、USDT 以及国际商业电汇，并可开具正规税务发票或商业合同。
                 </p>
               </div>
             </div>

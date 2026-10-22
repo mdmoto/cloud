@@ -577,7 +577,7 @@ export default function CloudPricingCalculator() {
                         <label htmlFor="apiRelay" className="font-medium text-sm text-neutral-950 dark:text-white cursor-pointer flex items-center gap-2">
                           <span>全球大模型 API 聚合中转网关 (按量计费)</span>
                           <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300">
-                            Claude 3.5 / GPT-4o / DeepSeek 极速直连
+                            Claude 5.5/5.6 · GPT-6 · DeepSeek 极速直连
                           </span>
                         </label>
                         <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1 leading-relaxed">
@@ -858,14 +858,22 @@ export default function CloudPricingCalculator() {
               </div>
 
               {/* Confidence Guarantee */}
-              <div className="mt-6 pt-4 border-t border-neutral-200/60 dark:border-neutral-800/60 text-[11px] text-neutral-500 space-y-1">
-                <div className="flex items-center gap-1.5">
-                  <ShieldCheck className="w-3.5 h-3.5 text-neutral-400" />
-                  <span>支持微信、支付宝、PromptPay、USDT 与公司电汇结算</span>
+              <div className="mt-6 pt-4 border-t border-neutral-200/60 dark:border-neutral-800/60 text-[11px] text-neutral-500 space-y-1.5">
+                <div className="flex items-center gap-1.5 text-neutral-600 dark:text-neutral-400">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                  <span>合规海外 AI 中心原生网络 · ChatGPT / Claude 极低封号风险</span>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <Clock className="w-3.5 h-3.5 text-neutral-400" />
-                  <span>所有测算均为透明含税/含专线基准，无任何隐形二次收费</span>
+                <div className="flex items-center gap-1.5 text-neutral-600 dark:text-neutral-400">
+                  <Coins className="w-3.5 h-3.5 text-blue-500 shrink-0" />
+                  <span>对公对私全渠道结算 · 美金 / USDT / 人民币 / 泰铢并开具正规发票</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-neutral-600 dark:text-neutral-400">
+                  <Globe2 className="w-3.5 h-3.5 text-purple-500 shrink-0" />
+                  <span>自主储备数百个原生静态商业 IP 池 · Fraud Score 0 专机专绑</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-neutral-600 dark:text-neutral-400">
+                  <Building2 className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                  <span>经过 Google 官方实名认证的真实清迈 1600㎡ 独栋科技实体</span>
                 </div>
               </div>
             </div>
