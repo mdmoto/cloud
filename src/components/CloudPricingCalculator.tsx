@@ -47,69 +47,74 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
   const [macMini, setMacMini] = useState({ enabled: false, count: 1, unitPrice: 2999 });
   // 3. RTX 4090 独享 GPU 算力主机 (ComfyUI / FLUX.1)
   const [rtx4090, setRtx4090] = useState({ enabled: false, count: 1, unitPrice: 3800 });
-  // 4. 清迈 AI 中心线下实体大楼办公工位通票 (1-5楼挑高空间)
-  const [offlineDesk, setOfflineDesk] = useState({ enabled: false, count: 1, unitPrice: 5000 });
+  // 4. 清迈 AI 中心线下实体大楼共享工位通票 (1-5楼共享工位 ฿1,000/月)
+  const [offlineDesk, setOfflineDesk] = useState({ enabled: false, count: 1, unitPrice: 1000 });
   // 5. 远程电脑托管
   const [colocation, setColocation] = useState({ enabled: false, count: 1, unitPrice: 1500 });
   // 6. 泰国验证码校验 (按月专属保号)
   const [thaiSms, setThaiSms] = useState({ enabled: false, count: 1, unitPrice: 399 });
   // 7. 独立静态IP
   const [dedicatedIp, setDedicatedIp] = useState({ enabled: true, count: 1, unitPrice: 500 });
-  // 8. 泰国小额代充 (按次加价)
-  const [microTopup, setMicroTopup] = useState({ enabled: false, count: 5, unitPrice: 50 });
+  // 8. 海外订阅与泰国代充 (按充值金额 15% 手续费，最低 ฿300，最高 ฿1,000 封顶)
+  const [microTopup, setMicroTopup] = useState({ enabled: false, amount: 720 }); // 720฿ ≈ $20 Claude Pro
   // 9. API中转 (按量计费包)
   const [apiRelay, setApiRelay] = useState({ enabled: false, tier: 1, unitPrice: 500 });
-  // 10. H200 8卡整机节点使用 (时租 1600฿ / 包月 880,000฿)
+  // 10. H200 8卡整机节点使用 (时租 1,800฿ / 包月 950,000฿)
   const [h200Gpu, setH200Gpu] = useState({
     enabled: false,
     mode: "hourly" as "hourly" | "monthly",
     hours: 10,
-    hourlyRate: 1600,
-    monthlyRate: 880000,
+    hourlyRate: 1800,
+    monthlyRate: 950000,
   });
-  // 11. 企业及团队出海综合合规落地 (详细咨询)
+  // 11. 企业及团队出海综合合规落地 (详细咨询，DBD设立+银行开户享7折 3.5万฿)
   const [enterprise, setEnterprise] = useState({ enabled: false });
+
+  // 代充手续费计算公式：按充值金额 15% 收取，单笔最低 ฿300，最高 ฿1,000 封顶
+  const microTopupFee = microTopup.enabled
+    ? Math.min(1000, Math.max(300, Math.round(microTopup.amount * 0.15)))
+    : 0;
 
   // Handle Preset Selection
   const applyPreset = (presetId: string) => {
     setActivePreset(presetId);
 
     if (presetId === "ecommerce_pack") {
-      // 泰国电商开店包: 微主机(1) + 独立IP(1) + 实体卡(1) + 代充通道(3笔)
+      // 泰国电商开店包: 微主机(1) + 独立IP(1) + 实体卡(1)
       setSharedPc({ enabled: true, count: 1, unitPrice: 499 });
       setMacMini({ enabled: false, count: 1, unitPrice: 2999 });
       setRtx4090({ enabled: false, count: 1, unitPrice: 3800 });
-      setOfflineDesk({ enabled: false, count: 1, unitPrice: 5000 });
+      setOfflineDesk({ enabled: false, count: 1, unitPrice: 1000 });
       setColocation({ enabled: false, count: 1, unitPrice: 1500 });
       setThaiSms({ enabled: true, count: 1, unitPrice: 399 });
       setDedicatedIp({ enabled: true, count: 1, unitPrice: 500 });
-      setMicroTopup({ enabled: true, count: 3, unitPrice: 50 });
+      setMicroTopup({ enabled: false, amount: 720 });
       setApiRelay({ enabled: false, tier: 1, unitPrice: 500 });
       setH200Gpu((prev) => ({ ...prev, enabled: false }));
       setEnterprise({ enabled: false });
     } else if (presetId === "indie_dev_pack") {
-      // 跨国独立开发包: Mac 1V1(1) + 独立IP(1) + API额度(1档)
+      // 跨国独立开发包: Mac 1V1(1) + 独立IP(1) + API额度(1档) + 账号代充
       setSharedPc({ enabled: false, count: 1, unitPrice: 499 });
       setMacMini({ enabled: true, count: 1, unitPrice: 2999 });
       setRtx4090({ enabled: false, count: 1, unitPrice: 3800 });
-      setOfflineDesk({ enabled: false, count: 1, unitPrice: 5000 });
+      setOfflineDesk({ enabled: false, count: 1, unitPrice: 1000 });
       setColocation({ enabled: false, count: 1, unitPrice: 1500 });
       setThaiSms({ enabled: false, count: 1, unitPrice: 399 });
       setDedicatedIp({ enabled: true, count: 1, unitPrice: 500 });
-      setMicroTopup({ enabled: false, count: 5, unitPrice: 50 });
+      setMicroTopup({ enabled: false, amount: 720 });
       setApiRelay({ enabled: true, tier: 1, unitPrice: 500 });
       setH200Gpu((prev) => ({ ...prev, enabled: false }));
       setEnterprise({ enabled: false });
     } else if (presetId === "claude_team_pack") {
-      // Claude & GPT 团队包: 微主机协同(1) + 独立IP(1) + API额度(2档/1000฿)
+      // 团队 AI 协同包: 微主机协同(1) + 独立IP(1) + API额度(2档/1000฿)
       setSharedPc({ enabled: true, count: 1, unitPrice: 499 });
       setMacMini({ enabled: false, count: 1, unitPrice: 2999 });
       setRtx4090({ enabled: false, count: 1, unitPrice: 3800 });
-      setOfflineDesk({ enabled: false, count: 1, unitPrice: 5000 });
+      setOfflineDesk({ enabled: false, count: 1, unitPrice: 1000 });
       setColocation({ enabled: false, count: 1, unitPrice: 1500 });
       setThaiSms({ enabled: false, count: 1, unitPrice: 399 });
       setDedicatedIp({ enabled: true, count: 1, unitPrice: 500 });
-      setMicroTopup({ enabled: false, count: 5, unitPrice: 50 });
+      setMicroTopup({ enabled: false, amount: 720 });
       setApiRelay({ enabled: true, tier: 2, unitPrice: 500 });
       setH200Gpu((prev) => ({ ...prev, enabled: false }));
       setEnterprise({ enabled: false });
@@ -118,24 +123,24 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
       setSharedPc({ enabled: false, count: 1, unitPrice: 499 });
       setMacMini({ enabled: false, count: 1, unitPrice: 2999 });
       setRtx4090({ enabled: true, count: 1, unitPrice: 3800 });
-      setOfflineDesk({ enabled: false, count: 1, unitPrice: 5000 });
+      setOfflineDesk({ enabled: false, count: 1, unitPrice: 1000 });
       setColocation({ enabled: false, count: 1, unitPrice: 1500 });
       setThaiSms({ enabled: false, count: 1, unitPrice: 399 });
       setDedicatedIp({ enabled: true, count: 1, unitPrice: 500 });
-      setMicroTopup({ enabled: false, count: 5, unitPrice: 50 });
+      setMicroTopup({ enabled: false, amount: 720 });
       setApiRelay({ enabled: true, tier: 1, unitPrice: 500 });
       setH200Gpu((prev) => ({ ...prev, enabled: false }));
       setEnterprise({ enabled: false });
     } else if (presetId === "nomad_dual_pack") {
-      // 「云地一体」清迈数字游民双栖包: 微主机(1) + 独立IP(1) + 实体卡(1) + 线下实体工位(1)
+      // 「云地一体」清迈数字游民双栖包: 微主机(1) + 独立IP(1) + 实体卡(1) + 线下共享工位(1, ฿1,000)
       setSharedPc({ enabled: true, count: 1, unitPrice: 499 });
       setMacMini({ enabled: false, count: 1, unitPrice: 2999 });
       setRtx4090({ enabled: false, count: 1, unitPrice: 3800 });
-      setOfflineDesk({ enabled: true, count: 1, unitPrice: 5000 });
+      setOfflineDesk({ enabled: true, count: 1, unitPrice: 1000 });
       setColocation({ enabled: false, count: 1, unitPrice: 1500 });
       setThaiSms({ enabled: true, count: 1, unitPrice: 399 });
       setDedicatedIp({ enabled: true, count: 1, unitPrice: 500 });
-      setMicroTopup({ enabled: false, count: 5, unitPrice: 50 });
+      setMicroTopup({ enabled: false, amount: 720 });
       setApiRelay({ enabled: false, tier: 1, unitPrice: 500 });
       setH200Gpu((prev) => ({ ...prev, enabled: false }));
       setEnterprise({ enabled: false });
@@ -144,18 +149,18 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
       setSharedPc({ enabled: false, count: 1, unitPrice: 499 });
       setMacMini({ enabled: false, count: 1, unitPrice: 2999 });
       setRtx4090({ enabled: false, count: 1, unitPrice: 3800 });
-      setOfflineDesk({ enabled: false, count: 1, unitPrice: 5000 });
+      setOfflineDesk({ enabled: false, count: 1, unitPrice: 1000 });
       setColocation({ enabled: false, count: 1, unitPrice: 1500 });
       setThaiSms({ enabled: false, count: 1, unitPrice: 399 });
       setDedicatedIp({ enabled: true, count: 2, unitPrice: 500 });
-      setMicroTopup({ enabled: false, count: 5, unitPrice: 50 });
+      setMicroTopup({ enabled: false, amount: 720 });
       setApiRelay({ enabled: false, tier: 1, unitPrice: 500 });
       setH200Gpu({
         enabled: true,
         mode: "monthly",
         hours: 0,
-        hourlyRate: 1600,
-        monthlyRate: 880000,
+        hourlyRate: 1800,
+        monthlyRate: 950000,
       });
       setEnterprise({ enabled: false });
     } else if (presetId === "custom") {
@@ -193,7 +198,7 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
   } else if (activePreset === "vision_creator_pack") {
     bundleSavingsPerMonth = 1201; // 5800 -> 4599
   } else if (activePreset === "nomad_dual_pack") {
-    bundleSavingsPerMonth = 1399; // 6398 -> 4999
+    bundleSavingsPerMonth = 499; // 2398 -> 1899
   }
 
   const effectiveMonthlySubtotal = Math.max(0, rawMonthlySubtotal - bundleSavingsPerMonth);
@@ -205,7 +210,7 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
 
   // Usage & On-demand / One-time subtotal
   const usageSubtotal =
-    (microTopup.enabled ? microTopup.count * microTopup.unitPrice : 0) +
+    (microTopup.enabled ? microTopupFee : 0) +
     (apiRelay.enabled ? apiRelay.tier * apiRelay.unitPrice : 0) +
     (h200Gpu.enabled && h200Gpu.mode === "hourly" ? h200Gpu.hours * h200Gpu.hourlyRate : 0);
 
@@ -228,12 +233,12 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
             : activePreset === "indie_dev_pack"
             ? "跨国独立开发敏捷包 (特惠 ฿3,399/月)"
             : activePreset === "claude_team_pack"
-            ? "Claude & GPT 团队 AI 综合协同包 (特惠 ฿2,499/月)"
+            ? "团队 AI 大模型合规协同包 (特惠 ฿2,499/月)"
             : activePreset === "vision_creator_pack"
             ? "AI 视觉与数字人创作者包 (特惠 ฿4,599/月)"
             : activePreset === "nomad_dual_pack"
-            ? "「云地一体」清迈数字游民双栖包 (特惠 ฿4,999/月)"
-            : "NVIDIA H200 8卡整机节点包月 (฿880,000/月)"
+            ? "「云地一体」清迈数字游民双栖包 (特惠 ฿1,899/月)"
+            : "NVIDIA H200 8卡整机节点包月 (฿950,000/月)"
         }`
       );
     }
@@ -250,7 +255,7 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
       lines.push(`• NVIDIA RTX 4090 独享 GPU 算力主机: ${rtx4090.count} 台 × ${symbol}${formatPrice(rtx4090.unitPrice)}/月`);
     }
     if (offlineDesk.enabled) {
-      lines.push(`• 清迈 AI 中心线下大厦实体工位通票: ${offlineDesk.count} 席 × ${symbol}${formatPrice(offlineDesk.unitPrice)}/月`);
+      lines.push(`• 清迈 AI 中心实体共享工位通票: ${offlineDesk.count} 席 × ${symbol}${formatPrice(offlineDesk.unitPrice)}/月`);
     }
     if (colocation.enabled) {
       lines.push(`• 物理主机机房托管: ${colocation.count} 台 × ${symbol}${formatPrice(colocation.unitPrice)}/月`);
@@ -262,7 +267,7 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
       lines.push(`• 独立海外原生静态商业 IP: ${dedicatedIp.count} 个 × ${symbol}${formatPrice(dedicatedIp.unitPrice)}/月`);
     }
     if (microTopup.enabled) {
-      lines.push(`• 泰国本地小额代充与代缴: ${microTopup.count} 笔 (服务费: ${symbol}${formatPrice(microTopup.unitPrice)}/笔)`);
+      lines.push(`• 海外订阅/本地代充服务: 充值本金 ${symbol}${formatPrice(microTopup.amount)} (15%手续费: ${symbol}${formatPrice(microTopupFee)}，最低฿300/最高฿1000封顶)`);
     }
     if (apiRelay.enabled) {
       lines.push(`• 全球大模型 API 聚合网关 (Claude 5.6 & GPT-6): ${apiRelay.tier} 档用量包 (${symbol}${formatPrice(apiRelay.tier * apiRelay.unitPrice)})`);
@@ -275,7 +280,7 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
       }
     }
     if (enterprise.enabled) {
-      lines.push(`• 企业及团队出海综合合规商业落地服务: 已勾选意向 (需商务顾问 1 对 1 定制对接)`);
+      lines.push(`• 企业及团队出海综合合规商业落地: DBD公司设立注册+商业银行开户享 7 折特惠 ฿35,000 起`);
     }
 
     if (activePreset !== "custom" && bundleSavingsPerMonth > 0) {
@@ -322,7 +327,7 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
             云工位与算力服务测算器
           </h2>
           <p className="text-sm sm:text-base text-neutral-600 dark:text-neutral-400 font-light mt-2">
-            支持一键套用场景套餐，亦可自由增减微主机、Mac 独享工作站、RTX 4090、线下实体大楼工位、独立 IP、实体 SIM 卡与 H200 8卡整机节点，即时获取透明预算。
+            支持一键套用场景套餐，亦可自由增减微主机、Mac 独享工作站、RTX 4090、大楼共享工位、独立 IP、实体卡及 H200 8卡整机节点，即时获取透明预算。
           </p>
         </div>
 
@@ -366,7 +371,7 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
                 : "bg-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 border border-neutral-200 dark:border-neutral-700"
             }`}
           >
-            🤖 Claude &amp; GPT 团队包 (฿2,499/月)
+            🤖 团队 AI 协同包 (฿2,499/月)
           </button>
 
           <button
@@ -390,7 +395,7 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
                 : "bg-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 border border-neutral-200 dark:border-neutral-700"
             }`}
           >
-            🏝️ 「云地一体」双栖包 (฿4,999/月)
+            🏝️ 「云地一体」双栖包 (฿1,899/月)
           </button>
 
           <button
@@ -402,7 +407,7 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
                 : "bg-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 border border-neutral-200 dark:border-neutral-700"
             }`}
           >
-            ⚡ H200 8卡整机包月 (฿880,000/月)
+            ⚡ H200 8卡整机包月 (฿950,000/月)
           </button>
 
           <button
@@ -420,7 +425,7 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-          {/* Left Column: 11 Services Configuration */}
+          {/* Left Column: Services Configuration */}
           <div className="lg:col-span-7 space-y-8">
             {/* Category 1: 按月订阅基础服务 */}
             <div>
@@ -645,7 +650,7 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
                   )}
                 </div>
 
-                {/* 4. 清迈 AI 中心线下大厦实体工位通票 */}
+                {/* 4. 清迈 AI 中心线下大厦实体共享工位通票 */}
                 <div
                   className={`p-5 rounded-2xl border transition-all ${
                     offlineDesk.enabled
@@ -667,13 +672,13 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
                       />
                       <div>
                         <label htmlFor="offlineDesk" className="font-medium text-sm text-neutral-950 dark:text-white cursor-pointer flex items-center gap-2">
-                          <span>清迈 AI 中心线下实体大楼办公工位通票</span>
+                          <span>清迈 AI 中心线下实体大楼共享工位通票 (与官网空间同步)</span>
                           <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300">
-                            1-5楼实体挑高大厦
+                            1-5楼实体挑高大厦 · 共享工位
                           </span>
                         </label>
                         <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1 leading-relaxed">
-                          清迈 1600㎡ 独栋 5 层科技大楼实体工位。享万兆物理内网直通云机房、ColaSola 光伏绿电冷气、免费现磨咖啡、音视频会议室与社区活动特权。
+                          清迈 1600㎡ 独栋 5 层科技大厦实体共享工位（热租工位）。享万兆内网直通云机房、ColaSola 光伏绿电冷气、免费现磨咖啡、音视频会议室与社区活动特权。
                         </p>
                       </div>
                     </div>
@@ -688,7 +693,7 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
 
                   {offlineDesk.enabled && (
                     <div className="mt-4 pt-3 border-t border-neutral-200/60 dark:border-neutral-800/60 flex items-center justify-between text-xs">
-                      <span className="text-neutral-500">实体工位席位数：</span>
+                      <span className="text-neutral-500">实体共享工位席位数：</span>
                       <div className="flex items-center gap-2">
                         <button
                           type="button"
@@ -937,11 +942,11 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
                 <span className="text-xs font-semibold uppercase tracking-wider text-neutral-500 font-mono">
                   02 / 弹性按次与按量计费服务 (Usage-Based &amp; On-Demand)
                 </span>
-                <span className="text-xs text-neutral-400 font-mono">用多少充多少 · 灵活透明</span>
+                <span className="text-xs text-neutral-400 font-mono">按需计算 · 15%手续费最低฿300/最高฿1000</span>
               </div>
 
               <div className="space-y-4">
-                {/* 8. 泰国小额代充 (按次直接加价) */}
+                {/* 8. 海外大模型会员与泰国代充 (按充值金额 15% 手续费，最低 ฿300，最高 ฿1,000 封顶) */}
                 <div
                   className={`p-5 rounded-2xl border transition-all ${
                     microTopup.enabled
@@ -963,46 +968,84 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
                       />
                       <div>
                         <label htmlFor="microTopup" className="font-medium text-sm text-neutral-950 dark:text-white cursor-pointer flex items-center gap-2">
-                          <span>泰国本地小额代充与代缴 (按次加价)</span>
+                          <span>海外大模型会员与泰国本地代充代缴 (Claude / ChatGPT / PromptPay)</span>
                           <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-teal-100 dark:bg-teal-950/60 text-teal-700 dark:text-teal-300">
-                            PromptPay / 话费 / 账单即时代充
+                            15% 手续费 · 最低฿300 / 最高฿1000封顶
                           </span>
                         </label>
                         <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1 leading-relaxed">
-                          支持 PromptPay 实时扫码代付、TrueMoney 钱包充值、泰国各运营商话费充值与本地商用水电账单代缴。按笔透明加收固定服务费。
+                          为开发者提供海外合规实体卡与实名 KYC 充值。支持 Claude Pro ($20/月)、ChatGPT Plus、海外开发者账号及泰国本地 PromptPay 账单扫码代付。单笔收取 15% 手续费，最低 ฿300，最高 ฿1,000 封顶。
                         </p>
                       </div>
                     </div>
 
                     <div className="text-right shrink-0">
                       <div className="text-sm font-medium text-neutral-950 dark:text-white font-mono">
-                        +{symbol}{formatPrice(microTopup.unitPrice)}
+                        +{symbol}{formatPrice(microTopupFee)}
                         <span className="text-xs text-neutral-500 font-normal"> /笔服务费</span>
+                      </div>
+                      <div className="text-[11px] text-neutral-400 font-mono mt-0.5">
+                        本金 {symbol}{formatPrice(microTopup.amount)}
                       </div>
                     </div>
                   </div>
 
                   {microTopup.enabled && (
-                    <div className="mt-4 pt-3 border-t border-neutral-200/60 dark:border-neutral-800/60 space-y-2">
+                    <div className="mt-4 pt-3 border-t border-neutral-200/60 dark:border-neutral-800/60 space-y-3">
                       <div className="flex items-center justify-between text-xs">
-                        <span className="text-neutral-500">预估月度代充笔数：</span>
-                        <span className="font-mono font-medium">{microTopup.count} 笔 / 月</span>
+                        <span className="text-neutral-500">单笔充值预估金额：</span>
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono font-medium text-sm text-neutral-950 dark:text-white">
+                            {symbol}{formatPrice(microTopup.amount)}
+                          </span>
+                          <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-mono">
+                            (服务费: {symbol}{formatPrice(microTopupFee)})
+                          </span>
+                        </div>
                       </div>
+
+                      {/* Quick preset amount chips */}
+                      <div className="flex flex-wrap items-center gap-2">
+                        {[
+                          { label: "Claude 会员 $20 (฿720)", val: 720 },
+                          { label: "฿2,000", val: 2000 },
+                          { label: "฿5,000", val: 5000 },
+                          { label: "฿10,000 (顶格฿1000手续费)", val: 10000 },
+                        ].map((chip) => (
+                          <button
+                            key={chip.val}
+                            type="button"
+                            onClick={() => {
+                              setMicroTopup({ ...microTopup, amount: chip.val });
+                              setActivePreset("custom");
+                            }}
+                            className={`px-2.5 py-1 rounded-md text-xs font-mono transition-colors ${
+                              microTopup.amount === chip.val
+                                ? "bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 font-semibold"
+                                : "bg-neutral-200/60 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-300"
+                            }`}
+                          >
+                            {chip.label}
+                          </button>
+                        ))}
+                      </div>
+
                       <input
                         type="range"
-                        min="1"
-                        max="50"
-                        value={microTopup.count}
+                        min="500"
+                        max="20000"
+                        step="500"
+                        value={microTopup.amount}
                         onChange={(e) => {
-                          setMicroTopup({ ...microTopup, count: parseInt(e.target.value) });
+                          setMicroTopup({ ...microTopup, amount: parseInt(e.target.value) });
                           setActivePreset("custom");
                         }}
                         className="w-full accent-neutral-900 dark:accent-white cursor-pointer"
                       />
                       <div className="flex justify-between text-[10px] text-neutral-400 font-mono">
-                        <span>1 笔</span>
-                        <span>25 笔</span>
-                        <span>50 笔</span>
+                        <span>฿500 (手续费฿300)</span>
+                        <span>฿10,000 (手续费฿1,000封顶)</span>
+                        <span>฿20,000</span>
                       </div>
                     </div>
                   )}
@@ -1075,7 +1118,7 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
                   )}
                 </div>
 
-                {/* 10. H200 8-GPU 整机节点 (时租 / 包月) */}
+                {/* 10. H200 8-GPU 整机节点 (时租 1,800฿ / 包月 95万฿) */}
                 <div
                   className={`p-5 rounded-2xl border transition-all ${
                     h200Gpu.enabled
@@ -1143,7 +1186,7 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
                                 : "text-neutral-600 dark:text-neutral-400"
                             }`}
                           >
-                            按小时时租 (1,600฿/h)
+                            按小时时租 (1,800฿/h)
                           </button>
                           <button
                             type="button"
@@ -1157,7 +1200,7 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
                                 : "text-neutral-600 dark:text-neutral-400"
                             }`}
                           >
-                            整机包月 (88万฿/月)
+                            整机包月 (95万฿/月)
                           </button>
                         </div>
                       </div>
@@ -1207,7 +1250,7 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
                 <span className="text-xs font-semibold uppercase tracking-wider text-neutral-500 font-mono">
                   03 / 企业与合规商业主体综合落地 (Enterprise &amp; Compliance)
                 </span>
-                <span className="text-xs text-neutral-400 font-mono">1对1 商务定制</span>
+                <span className="text-xs text-neutral-400 font-mono">DBD设立+银行开户享 7 折特惠 ฿35,000 起</span>
               </div>
 
               {/* 11. 企业及团队服务 */}
@@ -1234,18 +1277,18 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
                       <label htmlFor="enterprise" className="font-medium text-sm text-neutral-950 dark:text-white cursor-pointer flex items-center gap-2">
                         <span>企业及团队出海综合合规商业主体落地</span>
                         <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300">
-                          DBD设立 · 银行开户 · 财税托管
+                          DBD设立+银行开户享7折 ฿35,000起
                         </span>
                       </label>
                       <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1 leading-relaxed">
-                        包含泰国合规公司设立、BOI 投资委高新企业资质申请、长期居留技术签证（LTR / Smart Visa）、商业银行开户认证、本地财税代理与合规商业架构全托管。
+                        包含泰国商业发展局 (DBD) 全套公司设立注册 (7折 ฿21,000) + 商业银行对公账户开设 (7折 ฿14,000) 两项特惠合计 ฿35,000 起，另提供清迈 AI 中心独栋大厦商业地址资质授权、本地财税代理与合规商业架构全托管。
                       </p>
                     </div>
                   </div>
 
                   <div className="text-right shrink-0">
                     <span className="px-2.5 py-1 rounded-full bg-neutral-200/70 dark:bg-neutral-800 text-xs font-medium text-neutral-800 dark:text-neutral-200">
-                      需详细咨询
+                      ฿35,000起 (详询)
                     </span>
                   </div>
                 </div>
@@ -1358,8 +1401,8 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
 
                 {enterprise.enabled && (
                   <div className="flex justify-between items-center text-emerald-600 dark:text-emerald-400">
-                    <span>企业及团队出海综合合规</span>
-                    <span className="font-medium">1对1 商务定制服务</span>
+                    <span>企业及团队出海综合合规 (DBD设立+开户)</span>
+                    <span className="font-medium">7折特惠 ฿35,000起</span>
                   </div>
                 )}
               </div>
@@ -1398,7 +1441,7 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
               <div className="mt-6 pt-4 border-t border-neutral-200/60 dark:border-neutral-800/60 text-[11px] text-neutral-500 space-y-1.5">
                 <div className="flex items-center gap-1.5 text-neutral-600 dark:text-neutral-400">
                   <ShieldCheck className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                  <span>合规海外 AI 中心原生网络 · GPT-6 / Claude 5.5/5.6 极低封号风险</span>
+                  <span>纯正泰资合规实体 · GPT-6 / Claude 5.5/5.6 原生网络无封号风险</span>
                 </div>
                 <div className="flex items-center gap-1.5 text-neutral-600 dark:text-neutral-400">
                   <Coins className="w-3.5 h-3.5 text-blue-500 shrink-0" />

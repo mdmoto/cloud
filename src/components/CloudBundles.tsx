@@ -25,6 +25,7 @@ export interface BundlePlan {
   annualPrice: number;
   originalPrice: number;
   currency: string;
+  priceNote?: string;
   popular?: boolean;
   features: string[];
   includes: string[];
@@ -73,31 +74,31 @@ export default function CloudBundles({ onSelectBundle }: CloudBundlesProps) {
         "1× Mac 专属云工作站 (1V1 物理独享 Apple Silicon M 系列芯片，原生 macOS)",
         "1× 全球大模型 API 聚合网关 (每月含 ฿500 高速额度，支持 GPT-6 & Claude 5.6)",
         "1× 独立海外原生静态商业 IP (专属绑定 Mac，支持海外开发者后台与 App Store 提审)",
-        "远程安全开发沙箱 (VS Code Server / Parsec 60FPS 极速低延迟串流)",
-        "独占千兆对等带宽，代码与编译全流程在云端高安全机房受控运行",
+        "海外大模型/开发者账号专属代充与KYC服务 (提供合规海外信用卡与手机号绑定，无忧开通 Claude Pro/Team、ChatGPT Plus、Apple Developer 开发者账号)",
+        "独占千兆对等带宽，原生 macOS 物理机直通，开发编译零卡顿",
       ],
-      includes: ["Mac 1V1 独享", "大模型 API 额度", "独立静态IP", "安全沙箱"],
+      includes: ["Mac 1V1 独享", "大模型 API 额度", "独立静态IP", "账号代充/KYC"],
       actionLabel: "选定此独立开发包",
     },
     {
       id: "claude_team_pack",
-      name: "Claude & GPT 团队 AI 综合协同包",
-      badge: "AI WORKFLOW · 大模型深度团队",
-      tagline: "解决跨国 AI 团队访问 Claude 5.6 / Team 与 GPT-6 频繁被封号与限流的核心痛点。",
+      name: "团队 AI 大模型合规协同包 (Claude & GPT Team)",
+      badge: "AI TEAM · 多人防封协同",
+      tagline: "为 3-10 人 AI 产研团队打造：解决多人共用梯子被封号、缺乏海外信用卡、API 额度分散难管的痛点。",
       monthlyPrice: 2499,
       annualPrice: 1999,
       originalPrice: 3000,
       currency: "฿",
       popular: false,
       features: [
-        "1× 高配安全 AI 云工作站 (8 核心 vCPU / 32GB 内存 / 256GB NVMe / 中泰专线)",
-        "1× 独立海外原生静态商业 IP (泰国 AI Center 原生出口，完美契合 Claude Team & ChatGPT 风控)",
-        "1× 全球大模型 API 聚合加速网关 (每月内置 ฿1,000 高速 API Token 额度)",
-        "团队多席位权限分级管理与防数据外泄安全沙盒",
-        "ColaSola 100% 绿色光伏电力驱动，SLA 99.99% 企业级高可用保障",
+        "机房级原生商业出口专线与独享静态商业 IP (团队成员固定出口，彻底杜绝梯子跳 IP 连带封号与降智)",
+        "全球大模型聚合 API 网关 (每月内置 ฿1,000 共享 Token 额度，支持 Claude 5.6 & GPT-6，团队共享)",
+        "协助开通官方 Claude Team / ChatGPT Team 席位 (解决海外信用卡拒付与企业 KYC 认证痛点)",
+        "1× 轻量协同云工位 (预装统一开发环境，支持团队全天候挂机自动化任务与 Agent 运行)",
+        "团队多席位权限安全分级管理与防数据外泄沙盒，开具正规商业发票合规报销",
       ],
-      includes: ["高配 AI 工作站", "原生防封 IP", "1000฿ API 额度", "团队防泄密"],
-      actionLabel: "选定此 AI 协同包",
+      includes: ["原生防封专线", "1000฿ API 额度", "Team席位代开/KYC", "协同云工位"],
+      actionLabel: "选定此团队协同包",
     },
     {
       id: "vision_creator_pack",
@@ -123,40 +124,41 @@ export default function CloudBundles({ onSelectBundle }: CloudBundlesProps) {
       id: "nomad_dual_pack",
       name: "「云地一体」清迈数字游民双栖包",
       badge: "HYBRID · 线上云端 + 线下大楼",
-      tagline: "清迈独栋 5 层 AI 中心线下挑高工位 + 24h 永续在线云工位的专属跨国旅居特权方案。",
-      monthlyPrice: 4999,
-      annualPrice: 3999,
-      originalPrice: 6398,
+      tagline: "清迈独栋 5 层 AI 中心线下共享工位 (฿1,000/月) + 24h 永续在线云工位特惠打包方案。",
+      monthlyPrice: 1899,
+      annualPrice: 1519,
+      originalPrice: 2398,
       currency: "฿",
       popular: true,
       features: [
-        "1× 清迈 AI 中心线下实体大楼办公工位通票 (1-5楼挑高空间、冷气、现磨咖啡与会议室权益)",
+        "1× 清迈 AI 中心线下 5 层实体大厦共享工位月度通票 (1-5楼挑高空间、万兆光纤、免费现磨咖啡与会议室权益)",
         "1× 轻量共享型云电脑 (微主机，24h 云端全自动挂机、自动化脚本与防关联沙箱)",
         "1× 独立海外原生静态商业 IP (专属绑定，Fraud Score 0，跨国漫游无感直连)",
-        "1× 泰国原生真实实体 SIM 卡长期保号 (接收本地银行网银、PromptPay 与本地服务 OTP)",
-        "线下大楼万兆内网直通云端机房，出门在外随时通过中泰 IPLC 专线安全接入",
+        "1× 泰国原生真实实体 SIM 卡长期保号 (接收本地银行网银、PromptPay 与外卖应用 OTP)",
+        "线下大厦内网千兆直通云端机房，出门在外随时通过中泰 IPLC 专线安全接入",
       ],
-      includes: ["实体大楼工位", "24h 云工位", "独立静态IP", "实体卡保号"],
+      includes: ["线下大楼共享工位", "24h 云工位", "独立静态IP", "实体卡保号"],
       actionLabel: "选定此云地双栖包",
     },
     {
       id: "enterprise_suite",
       name: "出海企业合规商业落地旗舰包",
       badge: "ENTERPRISE · 实体一站式落地",
-      tagline: "泰国合规公司设立、商业银行开户、对公账户、长期地址授权与本地财税一站式托管。",
-      monthlyPrice: 28800,
-      annualPrice: 24000,
-      originalPrice: 36000,
+      tagline: "泰国 DBD 合规公司设立 + 商业银行对公账户 (享7折特惠) + 大厦商业地址与云工位运维全包。",
+      monthlyPrice: 35000,
+      annualPrice: 48800,
+      originalPrice: 50000,
       currency: "฿",
+      priceNote: "含 DBD设立与开户7折特惠",
       popular: false,
       features: [
-        "泰国商业发展局 (DBD) 全套公司设立合规注册 + 商业银行对公账户开设",
-        "泰国商业地址注册资质 (清迈 AI 中心独栋五层大厦实体地址官方授权)",
-        "2× 专属独立云电脑工位 + 2× 独立静态原生商业 IP (保障跨国团队敏捷协同)",
-        "2× 泰国实体 SIM 卡长期保号 (网银转账与税务系统申报专用)",
+        "泰国商业发展局 (DBD) 全套公司设立合规注册 (原价 ฿30,000，享7折特惠 ฿21,000)",
+        "泰国商业银行公司对公账户开设及网银认证 (原价 ฿20,000，享7折特惠 ฿14,000)",
+        "泰国商业地址注册资质授权 (清迈 AI 中心独栋五层大厦实体核心商区官方授权，฿1,000/月)",
+        "2× 专属独立云电脑工位 + 2× 独立静态原生商业 IP + 2× 泰国实体 SIM 卡长期保号",
         "本地财税代理与合规报税首季托管服务 + 1对1 专属中英泰三语商务顾问",
       ],
-      includes: ["DBD公司注册", "银行开户", "2×云工位", "2×静态IP", "财税托管"],
+      includes: ["DBD公司注册(7折)", "银行开户(7折)", "大厦商业地址", "2×云工位", "财税托管"],
       actionLabel: "咨询定制合规包",
     },
   ];
@@ -185,7 +187,7 @@ export default function CloudBundles({ onSelectBundle }: CloudBundlesProps) {
               场景化精选组合订阅包
             </h2>
             <p className="text-sm sm:text-base text-neutral-600 dark:text-neutral-400 font-light mt-2">
-              告别繁琐单点比价与拼凑，针对本土电商开店、独立开发、大模型团队、视觉创作、数字游民与出海企业合规落地量身定制交钥匙方案。
+              告别繁琐单点比价与拼凑，针对本土电商开店、独立开发、AI 协同团队、视觉创作、数字游民与出海企业合规落地量身定制交钥匙方案。
             </p>
           </div>
 
@@ -222,7 +224,14 @@ export default function CloudBundles({ onSelectBundle }: CloudBundlesProps) {
         {/* 6 Bundles Grid (2 rows of 3) */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {bundles.map((bundle) => {
-            const currentPrice = billingCycle === "monthly" ? bundle.monthlyPrice : bundle.annualPrice;
+            const isEnterprise = bundle.id === "enterprise_suite";
+            const currentPrice = isEnterprise
+              ? billingCycle === "monthly"
+                ? bundle.monthlyPrice
+                : bundle.annualPrice
+              : billingCycle === "monthly"
+              ? bundle.monthlyPrice
+              : bundle.annualPrice;
             const savings = bundle.originalPrice - currentPrice;
 
             return (
@@ -262,14 +271,22 @@ export default function CloudBundles({ onSelectBundle }: CloudBundlesProps) {
                       <span className="text-3xl font-light text-neutral-950 dark:text-white tracking-tight">
                         {bundle.currency}{currentPrice.toLocaleString()}
                       </span>
-                      <span className="text-xs text-neutral-500 font-mono">/ 月</span>
+                      <span className="text-xs text-neutral-500 font-mono">
+                        {isEnterprise ? (billingCycle === "annual" ? " / 年全包" : " 起 (7折设立)") : " / 月"}
+                      </span>
                     </div>
 
                     <div className="flex items-center gap-1.5 mt-1">
-                      <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
-                        比单购立省 {bundle.currency}{savings.toLocaleString()}/月
-                      </span>
-                      {billingCycle === "annual" && (
+                      {isEnterprise ? (
+                        <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
+                          DBD公司注册 + 银行开户两项享 7 折特惠
+                        </span>
+                      ) : (
+                        <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
+                          比单购立省 {bundle.currency}{savings.toLocaleString()}/月
+                        </span>
+                      )}
+                      {billingCycle === "annual" && !isEnterprise && (
                         <span className="text-[10px] font-mono px-1 rounded bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300">
                           年付折上折
                         </span>

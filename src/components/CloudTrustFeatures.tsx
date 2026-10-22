@@ -23,7 +23,7 @@ export default function CloudTrustFeatures() {
       badge: "01 / 合规与防风控",
       title: "合规海外 AI 实体中心",
       subtitle: "跨境使用 GPT-6 & Claude 5.5/5.6 终结封号隐患",
-      desc: "出海团队绝大多数账号被封均源于公共代理、脏池跳板与异常网络指纹。清迈 AI 中心作为受泰国政府与 BOI 认可的正规海外 AI 研发实体，所有云工位网络流量均由自建机房原生商业专线直发，完全满足 OpenAI (GPT-6 / ChatGPT Enterprise) 与 Anthropic (Claude 5.5 / 5.6) 的严苛风控合规审查，彻底摆脱封号、拒绝付款与平台‘降智’限制。",
+      desc: "出海团队绝大多数账号被封均源于公共代理、脏池跳板与异常网络指纹。清迈 AI 中心作为纯正的泰资企业与正规的海外AI研发实体，所有云工位网络流量均由自建机房原生商业专线直发，完全满足 OpenAI (GPT-6 / ChatGPT Enterprise) 与 Anthropic (Claude 5.5 / 5.6) 的严苛风控合规审查，彻底摆脱封号、拒绝付款与平台‘降智’限制。",
       icon: <ShieldCheck className="w-6 h-6 text-emerald-500" />,
       tags: ["GPT-6 / Claude 5.6 合规直连", "绝无跳板连带封号", "原生海外商业网络", "官方生态友好免风控"],
       gradient: "from-emerald-500/10 via-transparent to-transparent",

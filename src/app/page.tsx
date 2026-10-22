@@ -59,6 +59,39 @@ export default function CloudHomePage() {
 
   const workloads = [
     {
+      id: "sandbox",
+      title: "远程高安全研发工作站",
+      badge: "Secure Dev Sandbox",
+      gpu: "8-32 vCPU + 32-128GB RAM",
+      stack: "VS Code Server · JetBrains Gateway · Docker · WireGuard · Audit Logs",
+      speed: "端到端硬件级加密传输",
+      description:
+        "源码全流程运行在清迈 AI 中心自建机房，代码不落地、访问可审计、环境统一标准化，赋能跨国分布式开发团队无缝敏捷协作。",
+      features: [
+        "Claude 5.5/5.6、ChatGPT (GPT-6) 原生合规无忧使用，免梯防封",
+        "VS Code / JetBrains Gateway 远程一键直连，代码不落地",
+        "支持 Docker 容器秒级编排与即时快照备份",
+        "全程 TLS 加密隧道与细粒度访问权限控制",
+        "可无感挂载大容量 NAS 集中存储与版本管理",
+      ],
+    },
+    {
+      id: "crossborder",
+      title: "跨境电商多矩阵与海外运营",
+      badge: "Clean ASN / Static IP",
+      gpu: "高频 8-16 vCPU + 独立专线",
+      stack: "Dedicated Clean IP · Anti-Detect Sandbox · IPLC SD-WAN · Dual-Auth",
+      speed: "原生住宅/商业 IP · 零风控识别",
+      description:
+        "独占纯净海外原生商业 IP 与独立环境沙箱，彻底避免 TikTok 跨境电商、亚马逊、独立站等多账号关联封禁与地域风控。",
+      features: [
+        "100% 纯净原生商业 IP，ASN 干净无不良历史记录",
+        "多虚拟环境硬件指纹隔离，防关联防风控",
+        "中泰 IPLC 直连低延迟专线，操作不掉线不卡顿",
+        "支持团队多权限分级管理，安全高效协同",
+      ],
+    },
+    {
       id: "llm",
       title: "大语言模型微调与推理",
       badge: "LLM & RAG",
@@ -88,38 +121,6 @@ export default function CloudHomePage() {
         "预挂载数百款热门商用 LoRA 与 ControlNet 预处理器",
         "支持 Moonlight / Parsec 60FPS 超低延迟远程桌面操作",
         "直连高速 NVMe 缓存盘，出图与批量渲染无卡顿",
-      ],
-    },
-    {
-      id: "crossborder",
-      title: "跨境电商多矩阵与海外运营",
-      badge: "Clean ASN / Static IP",
-      gpu: "高频 8-16 vCPU + 独立专线",
-      stack: "Dedicated Clean IP · Anti-Detect Sandbox · IPLC SD-WAN · Dual-Auth",
-      speed: "原生住宅/商业 IP · 零风控识别",
-      description:
-        "独占纯净海外原生商业 IP 与独立环境沙箱，彻底避免 TikTok 跨境电商、亚马逊、独立站等多账号关联封禁与地域风控。",
-      features: [
-        "100% 纯净原生商业 IP，ASN 干净无不良历史记录",
-        "多虚拟环境硬件指纹隔离，防关联防风控",
-        "中泰 IPLC 直连低延迟专线，操作不掉线不卡顿",
-        "支持团队多权限分级管理，安全高效协同",
-      ],
-    },
-    {
-      id: "sandbox",
-      title: "远程高安全研发工作站",
-      badge: "Secure Dev Sandbox",
-      gpu: "8-32 vCPU + 32-128GB RAM",
-      stack: "VS Code Server · JetBrains Gateway · Docker · WireGuard · Audit Logs",
-      speed: "端到端硬件级加密传输",
-      description:
-        "源码全流程运行在清迈 AI 中心自建机房，代码不落地、访问可审计、环境统一标准化，赋能跨国分布式开发团队无缝敏捷协作。",
-      features: [
-        "VS Code / JetBrains Gateway 远程一键直连",
-        "支持 Docker 容器秒级编排与即时快照备份",
-        "全程 TLS 加密隧道与细粒度访问权限控制",
-        "可无感挂载大容量 NAS 集中存储与版本管理",
       ],
     },
   ];
@@ -630,22 +631,22 @@ export default function CloudHomePage() {
                       <optgroup label="场景化组合订阅包 (Curated Bundles)">
                         <option value="泰国电商本土店抗风控开店包 (฿1,199/月)">🔥 泰国电商本土店抗风控开店包 (฿1,199/月)</option>
                         <option value="跨国独立开发敏捷包 (Mac 1V1, ฿3,399/月)">💻 跨国独立开发敏捷包 (Mac 1V1, ฿3,399/月)</option>
-                        <option value="Claude & GPT 团队 AI 综合协同包 (฿2,499/月)">🤖 Claude & GPT 团队 AI 综合协同包 (฿2,499/月)</option>
+                        <option value="团队 AI 大模型合规协同包 (฿2,499/月)">🤖 团队 AI 大模型合规协同包 (฿2,499/月)</option>
                         <option value="AI 视觉与数字人创作者包 (RTX 4090, ฿4,599/月)">🎨 AI 视觉与数字人创作者包 (RTX 4090, ฿4,599/月)</option>
-                        <option value="「云地一体」清迈数字游民双栖包 (฿4,999/月)">🏝️ 「云地一体」清迈数字游民双栖包 (฿4,999/月)</option>
-                        <option value="出海企业合规商业落地旗舰包 (฿28,800起)">🏢 出海企业合规商业落地旗舰包 (฿28,800起)</option>
+                        <option value="「云地一体」清迈数字游民双栖包 (฿1,899/月)">🏝️ 「云地一体」清迈数字游民双栖包 (฿1,899/月)</option>
+                        <option value="出海企业合规商业落地旗舰包 (DBD设立+开户7折 ฿35,000起)">🏢 出海企业合规商业落地旗舰包 (DBD设立+开户7折 ฿35,000起)</option>
                       </optgroup>
                       <optgroup label="单项按需服务 (Individual Services)">
                         <option value="轻量共享型云电脑 (微主机 ฿499/月)">轻量共享型云电脑 (微主机 ฿499/月)</option>
                         <option value="Mac 专属云工作站 (1V1 Apple Silicon ฿2,999/月)">Mac 专属云工作站 (1V1 Apple Silicon ฿2,999/月)</option>
                         <option value="RTX 4090 独享 GPU 算力主机 (฿3,800/月)">RTX 4090 独享 GPU 算力主机 (฿3,800/月)</option>
-                        <option value="清迈 AI 中心线下大厦实体工位通票 (฿5,000/月)">清迈 AI 中心线下大厦实体工位通票 (฿5,000/月)</option>
+                        <option value="清迈 AI 中心线下大厦实体共享工位 (฿1,000/月)">清迈 AI 中心线下大厦实体共享工位 (฿1,000/月)</option>
                         <option value="物理设备/主机机房托管 (฿1,500/月)">物理设备/主机机房托管 (฿1,500/月)</option>
                         <option value="泰国原生实体卡短信验证码校验 (฿399/月)">泰国原生实体卡短信验证码校验 (฿399/月)</option>
                         <option value="独立海外原生静态商业 IP (฿500/月)">独立海外原生静态商业 IP (฿500/月)</option>
-                        <option value="泰国本地小额代充与代缴 (+฿50/笔)">泰国本地小额代充与代缴 (+฿50/笔)</option>
+                        <option value="海外订阅与泰国本地代充代缴 (15%手续费 最低฿300/最高฿1000)">海外订阅与泰国本地代充代缴 (15%手续费 最低฿300/最高฿1000)</option>
                         <option value="全球大模型 API 聚合中转网关 (GPT-6 / Claude 5.6)">全球大模型 API 聚合中转网关 (GPT-6 / Claude 5.6)</option>
-                        <option value="NVIDIA H200 8-GPU 旗舰整机算力节点 (时租 / 包月)">NVIDIA H200 8-GPU 旗舰整机算力节点 (时租 / 包月)</option>
+                        <option value="NVIDIA H200 8-GPU 旗舰整机算力节点 (时租 1,800฿/h / 包月 95万฿)">NVIDIA H200 8-GPU 旗舰整机算力节点 (时租 1,800฿/h / 包月 95万฿)</option>
                       </optgroup>
                     </select>
                   </div>
@@ -708,7 +709,7 @@ export default function CloudHomePage() {
                   Q: 为什么使用你们的云工位访问 ChatGPT (GPT-6) 与 Claude (5.5/5.6) 极低封号风险？
                 </h4>
                 <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 font-light leading-relaxed">
-                  A: 绝大多数国内出海账号被封均因使用数据中心脏 IP、公共梯子频繁跳跃节点或软硬件指纹异常。清迈 AI 中心作为海外正规合法 AI 研发实体，所有网络流量由自建机房原生商业专线直连欧美骨干网，分配专属干净静态 IP（Fraud Score 恒为 0）。完全契合 OpenAI (GPT-6) 与 Anthropic (Claude 5.5/5.6) 的属地与网络合规风控审查标准，从底层彻底终结封号与“降智”限制。
+                  A: 绝大多数国内出海账号被封均因使用数据中心脏 IP、公共梯子频繁跳跃节点或软硬件指纹异常。清迈 AI 中心作为纯正的泰资企业与正规的海外AI研发实体，所有网络流量由自建机房原生商业专线直连欧美骨干网，分配专属干净静态 IP（Fraud Score 恒为 0）。完全契合 OpenAI (GPT-6) 与 Anthropic (Claude 5.5/5.6) 的属地与网络合规风控审查标准，从底层彻底终结封号与“降智”限制。
                 </p>
               </div>
 
