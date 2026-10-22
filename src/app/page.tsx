@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CloudTrustFeatures from "@/components/CloudTrustFeatures";
 import CloudServices from "@/components/CloudServices";
+import CloudBundles from "@/components/CloudBundles";
 import CloudPricingCalculator from "@/components/CloudPricingCalculator";
 import {
   Cpu,
@@ -33,6 +34,7 @@ import {
 export default function CloudHomePage() {
   const [currentBg, setCurrentBg] = useState(0);
   const [selectedWorkload, setSelectedWorkload] = useState(0);
+  const [selectedPreset, setSelectedPreset] = useState<string>("custom");
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [trialForm, setTrialForm] = useState({
     name: "",
@@ -417,8 +419,11 @@ export default function CloudHomePage() {
         {/* 9 Core Services Matrix (Mirroring workspace Services format) */}
         <CloudServices />
 
+        {/* Curated Scenario Bundles */}
+        <CloudBundles onSelectBundle={(bundleId) => setSelectedPreset(bundleId)} />
+
         {/* Interactive Pricing & Solution Configurator (Mirroring workspace PricingCalculator format) */}
-        <CloudPricingCalculator />
+        <CloudPricingCalculator initialPreset={selectedPreset} />
 
         {/* Physical Building & Green Energy Advantage */}
         <section className="py-24 bg-[#f8f8fa] dark:bg-[#0c0c0e] border-b border-neutral-200 dark:border-neutral-800">
@@ -548,7 +553,7 @@ export default function CloudHomePage() {
         {/* Application & Trial Form */}
         <section id="trial" className="py-24 bg-white dark:bg-[#070709] border-b border-neutral-200 dark:border-neutral-800">
           <div className="max-w-4xl mx-auto px-6">
-            <div className="text-center max-w-xl mx-auto mb-12">
+            <div className="text-center max-w-xl mx-auto mb-10">
               <span className="text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400 font-mono">
                 Get Started Today
               </span>
@@ -558,6 +563,26 @@ export default function CloudHomePage() {
               <p className="text-sm text-neutral-600 dark:text-neutral-400 font-light mt-2">
                 填写您的需求，专业技术架构师将在 30 分钟内与您联系并为您分配测试实例。
               </p>
+            </div>
+
+            {/* Direct Official Contact Pills */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+              <div className="p-3.5 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-center">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-neutral-400 block mb-0.5">微信专属技术顾问</span>
+                <span className="text-xs font-medium text-neutral-900 dark:text-white font-mono select-all">cmai_support</span>
+              </div>
+              <div className="p-3.5 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-center">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-neutral-400 block mb-0.5">官方 LINE 专线</span>
+                <span className="text-xs font-medium text-neutral-900 dark:text-white font-mono select-all">@cmai_center</span>
+              </div>
+              <div className="p-3.5 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-center">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-neutral-400 block mb-0.5">官方联络邮箱</span>
+                <a href="mailto:mdmoto@gmail.com" className="text-xs font-medium text-neutral-900 dark:text-white font-mono hover:underline">mdmoto@gmail.com</a>
+              </div>
+              <div className="p-3.5 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-center">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-neutral-400 block mb-0.5">清迈现地热线</span>
+                <a href="tel:+66987654321" className="text-xs font-medium text-neutral-900 dark:text-white font-mono hover:underline">+66 98 765 4321</a>
+              </div>
             </div>
 
             <div className="p-8 sm:p-12 rounded-3xl bg-neutral-50 dark:bg-neutral-900/60 border border-neutral-200 dark:border-neutral-800 shadow-sm">
@@ -602,16 +627,26 @@ export default function CloudHomePage() {
                       onChange={(e) => setTrialForm({ ...trialForm, plan: e.target.value })}
                       className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-sm text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:focus:ring-white"
                     >
-                      <option value="轻量共享型云电脑 (微主机)">轻量共享型云电脑 (微主机)</option>
-                      <option value="Mac 专属云工作站 (1V1 Apple Silicon)">Mac 专属云工作站 (1V1 Apple Silicon)</option>
-                      <option value="物理设备/主机机房托管">物理设备/主机机房托管</option>
-                      <option value="泰国原生实体卡短信验证码校验">泰国原生实体卡短信验证码校验</option>
-                      <option value="独立海外原生静态商业 IP">独立海外原生静态商业 IP</option>
-                      <option value="泰国本地小额代充与代缴">泰国本地小额代充与代缴</option>
-                      <option value="全球大模型 API 聚合中转网关">全球大模型 API 聚合中转网关</option>
-                      <option value="NVIDIA H200 顶级 GPU 算力按需租用">NVIDIA H200 顶级 GPU 算力按需租用</option>
-                      <option value="企业及团队出海综合合规商业落地">企业及团队出海综合合规商业落地</option>
-                      <option value="组合配置定制与整体方案">组合配置定制与整体方案 (详见测算清单)</option>
+                      <optgroup label="场景化组合订阅包 (Curated Bundles)">
+                        <option value="泰国电商本土店抗风控开店包 (฿1,199/月)">🔥 泰国电商本土店抗风控开店包 (฿1,199/月)</option>
+                        <option value="跨国独立开发敏捷包 (Mac 1V1, ฿3,399/月)">💻 跨国独立开发敏捷包 (Mac 1V1, ฿3,399/月)</option>
+                        <option value="Claude & GPT 团队 AI 综合协同包 (฿2,499/月)">🤖 Claude & GPT 团队 AI 综合协同包 (฿2,499/月)</option>
+                        <option value="AI 视觉与数字人创作者包 (RTX 4090, ฿4,599/月)">🎨 AI 视觉与数字人创作者包 (RTX 4090, ฿4,599/月)</option>
+                        <option value="「云地一体」清迈数字游民双栖包 (฿4,999/月)">🏝️ 「云地一体」清迈数字游民双栖包 (฿4,999/月)</option>
+                        <option value="出海企业合规商业落地旗舰包 (฿28,800起)">🏢 出海企业合规商业落地旗舰包 (฿28,800起)</option>
+                      </optgroup>
+                      <optgroup label="单项按需服务 (Individual Services)">
+                        <option value="轻量共享型云电脑 (微主机 ฿499/月)">轻量共享型云电脑 (微主机 ฿499/月)</option>
+                        <option value="Mac 专属云工作站 (1V1 Apple Silicon ฿2,999/月)">Mac 专属云工作站 (1V1 Apple Silicon ฿2,999/月)</option>
+                        <option value="RTX 4090 独享 GPU 算力主机 (฿3,800/月)">RTX 4090 独享 GPU 算力主机 (฿3,800/月)</option>
+                        <option value="清迈 AI 中心线下大厦实体工位通票 (฿5,000/月)">清迈 AI 中心线下大厦实体工位通票 (฿5,000/月)</option>
+                        <option value="物理设备/主机机房托管 (฿1,500/月)">物理设备/主机机房托管 (฿1,500/月)</option>
+                        <option value="泰国原生实体卡短信验证码校验 (฿399/月)">泰国原生实体卡短信验证码校验 (฿399/月)</option>
+                        <option value="独立海外原生静态商业 IP (฿500/月)">独立海外原生静态商业 IP (฿500/月)</option>
+                        <option value="泰国本地小额代充与代缴 (+฿50/笔)">泰国本地小额代充与代缴 (+฿50/笔)</option>
+                        <option value="全球大模型 API 聚合中转网关 (GPT-6 / Claude 5.6)">全球大模型 API 聚合中转网关 (GPT-6 / Claude 5.6)</option>
+                        <option value="NVIDIA H200 8-GPU 旗舰整机算力节点 (时租 / 包月)">NVIDIA H200 8-GPU 旗舰整机算力节点 (时租 / 包月)</option>
+                      </optgroup>
                     </select>
                   </div>
 

@@ -94,11 +94,21 @@ export default function Footer() {
             </div>
             <div className="flex items-center gap-2 text-xs">
               <Mail className="w-3.5 h-3.5 shrink-0 text-neutral-400" />
-              <span>contact@lazzor.com</span>
+              <a href="mailto:mdmoto@gmail.com" className="hover:text-neutral-950 dark:hover:text-white transition-colors">
+                mdmoto@gmail.com
+              </a>
+            </div>
+            <div className="flex items-center gap-2 text-xs">
+              <span className="font-mono text-neutral-400 font-semibold text-[11px]">WeChat:</span>
+              <span className="font-mono text-neutral-800 dark:text-neutral-200">cmai_support</span>
+            </div>
+            <div className="flex items-center gap-2 text-xs">
+              <span className="font-mono text-neutral-400 font-semibold text-[11px]">LINE:</span>
+              <span className="font-mono text-neutral-800 dark:text-neutral-200">@cmai_center</span>
             </div>
             <div className="flex items-center gap-2 text-xs">
               <Globe className="w-3.5 h-3.5 shrink-0 text-neutral-400" />
-              <span>colasola.com · lazzor.com</span>
+              <span>lazzor.com · colasola.com</span>
             </div>
           </div>
         </div>
