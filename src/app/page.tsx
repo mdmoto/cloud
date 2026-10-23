@@ -251,7 +251,7 @@ export default function CloudHomePage() {
               <div className="p-4 rounded-2xl bg-neutral-50/80 dark:bg-neutral-900/40 border border-neutral-200/60 dark:border-neutral-800/60 backdrop-blur-sm">
                 <div className="flex items-center justify-between text-neutral-500 dark:text-neutral-400 mb-1">
                   <span className="text-xs font-mono">中泰专线延迟</span>
-                  <Activity className="w-4 h-4 text-blue-500" />
+                  <Activity className="w-4 h-4 text-neutral-700 dark:text-neutral-300" />
                 </div>
                 <div className="text-2xl font-medium text-neutral-900 dark:text-white tracking-tight">
                   &lt; 18 ms
@@ -264,7 +264,7 @@ export default function CloudHomePage() {
               <div className="p-4 rounded-2xl bg-neutral-50/80 dark:bg-neutral-900/40 border border-neutral-200/60 dark:border-neutral-800/60 backdrop-blur-sm">
                 <div className="flex items-center justify-between text-neutral-500 dark:text-neutral-400 mb-1">
                   <span className="text-xs font-mono">SLA 业务可用性</span>
-                  <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                  <ShieldCheck className="w-4 h-4 text-neutral-700 dark:text-neutral-300" />
                 </div>
                 <div className="text-2xl font-medium text-neutral-900 dark:text-white tracking-tight">
                   99.99%
@@ -277,7 +277,7 @@ export default function CloudHomePage() {
               <div className="p-4 rounded-2xl bg-neutral-50/80 dark:bg-neutral-900/40 border border-neutral-200/60 dark:border-neutral-800/60 backdrop-blur-sm">
                 <div className="flex items-center justify-between text-neutral-500 dark:text-neutral-400 mb-1">
                   <span className="text-xs font-mono">海外原生商业 IP</span>
-                  <Globe2 className="w-4 h-4 text-indigo-500" />
+                  <Globe2 className="w-4 h-4 text-neutral-700 dark:text-neutral-300" />
                 </div>
                 <div className="text-2xl font-medium text-neutral-900 dark:text-white tracking-tight">
                   100% 独享
@@ -290,7 +290,7 @@ export default function CloudHomePage() {
               <div className="p-4 rounded-2xl bg-neutral-50/80 dark:bg-neutral-900/40 border border-neutral-200/60 dark:border-neutral-800/60 backdrop-blur-sm">
                 <div className="flex items-center justify-between text-neutral-500 dark:text-neutral-400 mb-1">
                   <span className="text-xs font-mono">算力开通速度</span>
-                  <Zap className="w-4 h-4 text-amber-500" />
+                  <Zap className="w-4 h-4 text-neutral-700 dark:text-neutral-300" />
                 </div>
                 <div className="text-2xl font-medium text-neutral-900 dark:text-white tracking-tight">
                   即开即用
@@ -307,13 +307,13 @@ export default function CloudHomePage() {
         <CloudTrustFeatures />
 
         {/* Workload Engines & Stack */}
-        <section className="py-24 bg-[#f8f8fa] dark:bg-[#0c0c0e] border-b border-neutral-200 dark:border-neutral-800">
+        <section className="py-24 bg-[#fafafa] dark:bg-[#070707] border-b border-neutral-200/80 dark:border-neutral-800/80 transition-colors duration-300">
           <div className="max-w-7xl mx-auto px-6">
             <div className="max-w-2xl mb-12">
-              <span className="text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400 font-mono">
+              <span className="text-[11px] font-sans tracking-[0.2em] text-[#86868b] uppercase font-semibold block mb-3">
                 Workload Environments
               </span>
-              <h2 className="text-2xl sm:text-3xl font-light text-neutral-950 dark:text-white tracking-tight mt-1">
+              <h2 className="text-3xl sm:text-4xl font-light text-[#1d1d1f] dark:text-white tracking-tight">
                 针对四大主流核心生产场景深度调优
               </h2>
               <p className="text-sm text-neutral-600 dark:text-neutral-400 font-light mt-2">
@@ -391,7 +391,7 @@ export default function CloudHomePage() {
                       <span className="text-[11px] uppercase tracking-wider font-mono text-neutral-500">
                         基准吞吐能力
                       </span>
-                      <div className="text-sm font-medium text-emerald-600 dark:text-emerald-400 mt-1 font-mono">
+                      <div className="text-sm font-medium text-neutral-900 dark:text-white mt-1 font-mono">
                         {workloads[selectedWorkload].speed}
                       </div>
                     </div>
@@ -427,14 +427,14 @@ export default function CloudHomePage() {
         <CloudPricingCalculator initialPreset={selectedPreset} />
 
         {/* Physical Building & Green Energy Advantage */}
-        <section className="py-24 bg-[#f8f8fa] dark:bg-[#0c0c0e] border-b border-neutral-200 dark:border-neutral-800">
+        <section className="py-24 bg-[#fafafa] dark:bg-[#070707] border-b border-neutral-200/80 dark:border-neutral-800/80 transition-colors duration-300">
           <div className="max-w-7xl mx-auto px-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div>
-                <span className="text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400 font-mono">
+                <span className="text-[11px] font-sans tracking-[0.2em] text-[#86868b] uppercase font-semibold block mb-3">
                   Physical Infrastructure &amp; Green Power
                 </span>
-                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light text-neutral-950 dark:text-white tracking-tight mt-2 mb-6">
+                <h2 className="text-3xl sm:text-4xl font-light text-[#1d1d1f] dark:text-white tracking-tight mb-6">
                   独栋五层实体大楼
                   <br />
                   自建机房与光伏微电网底座
@@ -667,7 +667,7 @@ export default function CloudHomePage() {
 
                 <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
                   <div className="text-xs text-neutral-500 flex items-center gap-1.5">
-                    <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                    <ShieldCheck className="w-4 h-4 text-neutral-500 dark:text-neutral-400" />
                     <span>我们承诺严格保护您的个人与企业数据隐私安全</span>
                   </div>
 
@@ -682,8 +682,8 @@ export default function CloudHomePage() {
               </form>
 
               {formSubmitted && (
-                <div className="mt-6 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-xs sm:text-sm text-center flex items-center justify-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 shrink-0" />
+                <div className="mt-6 p-4 rounded-xl bg-neutral-100 dark:bg-neutral-800/80 border border-neutral-300 dark:border-neutral-700 text-neutral-900 dark:text-white text-xs sm:text-sm text-center flex items-center justify-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-neutral-600 dark:text-neutral-300 shrink-0" />
                   <span>已收到您的试用申请！架构师将在 30 分钟内通过微信或邮箱与您联系。</span>
                 </div>
               )}
@@ -692,13 +692,13 @@ export default function CloudHomePage() {
         </section>
 
         {/* FAQ Section */}
-        <section className="py-24 bg-[#f8f8fa] dark:bg-[#0c0c0e]">
+        <section className="py-24 bg-[#fafafa] dark:bg-[#070707] border-t border-neutral-200/80 dark:border-neutral-800/80 transition-colors duration-300">
           <div className="max-w-4xl mx-auto px-6">
             <div className="text-center max-w-xl mx-auto mb-16">
-              <span className="text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400 font-mono">
+              <span className="text-[11px] font-sans tracking-[0.2em] text-[#86868b] uppercase font-semibold block mb-3">
                 FAQ
               </span>
-              <h2 className="text-2xl sm:text-3xl font-light text-neutral-950 dark:text-white tracking-tight mt-1">
+              <h2 className="text-3xl sm:text-4xl font-light text-[#1d1d1f] dark:text-white tracking-tight">
                 常见问题解答
               </h2>
             </div>

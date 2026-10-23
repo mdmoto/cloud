@@ -315,18 +315,17 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
   };
 
   return (
-    <section id="calculator" className="py-24 bg-white dark:bg-[#070709] border-b border-neutral-200 dark:border-neutral-800 transition-colors">
+    <section id="calculator" className="py-24 bg-white dark:bg-black border-b border-neutral-200/80 dark:border-neutral-800/80 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-6">
         {/* Section Header */}
         <div className="max-w-3xl mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-xs font-mono text-neutral-600 dark:text-neutral-300 mb-3">
-            <Sliders className="w-3.5 h-3.5 text-blue-500" />
-            <span>Interactive Service Configurator</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-light text-neutral-950 dark:text-white tracking-tight">
+          <span className="text-[11px] font-sans tracking-[0.2em] text-[#86868b] uppercase font-semibold block mb-3">
+            Interactive Service Configurator
+          </span>
+          <h2 className="text-3xl sm:text-4xl font-light text-[#1d1d1f] dark:text-white tracking-tight">
             云工位与算力服务测算器
           </h2>
-          <p className="text-sm sm:text-base text-neutral-600 dark:text-neutral-400 font-light mt-2">
+          <p className="text-sm sm:text-base text-[#515154] dark:text-[#86868b] font-light mt-2 leading-relaxed">
             支持一键套用场景套餐，亦可自由增减微主机、Mac 独享工作站、RTX 4090、大楼共享工位、独立 IP、实体卡及 H200 8卡整机节点，即时获取透明预算。
           </p>
         </div>
@@ -334,7 +333,7 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
         {/* Quick Preset Selector Pills */}
         <div className="mb-12 p-4 rounded-2xl bg-neutral-50 dark:bg-neutral-900/60 border border-neutral-200 dark:border-neutral-800 flex flex-wrap items-center gap-2.5">
           <span className="text-xs font-mono text-neutral-500 font-semibold uppercase tracking-wider mr-2 flex items-center gap-1.5">
-            <PackageCheck className="w-3.5 h-3.5 text-blue-500" />
+            <PackageCheck className="w-3.5 h-3.5 text-neutral-600 dark:text-neutral-400" />
             <span>套用场景套餐:</span>
           </span>
 
@@ -460,7 +459,7 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
                       <div>
                         <label htmlFor="sharedPc" className="font-medium text-sm text-neutral-950 dark:text-white cursor-pointer flex items-center gap-2">
                           <span>轻量共享型云电脑 (微主机)</span>
-                          <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300">
+                          <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300">
                             多任务弹性共享
                           </span>
                         </label>
@@ -531,7 +530,7 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
                       <div>
                         <label htmlFor="macMini" className="font-medium text-sm text-neutral-950 dark:text-white cursor-pointer flex items-center gap-2">
                           <span>Mac 专属云工作站 (1V1 独享 Apple Silicon)</span>
-                          <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300">
+                          <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300">
                             物理独享 M 系列
                           </span>
                         </label>
@@ -602,7 +601,7 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
                       <div>
                         <label htmlFor="rtx4090" className="font-medium text-sm text-neutral-950 dark:text-white cursor-pointer flex items-center gap-2">
                           <span>NVIDIA RTX 4090 独享 GPU 算力主机 (24GB VRAM)</span>
-                          <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300">
+                          <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300">
                             ComfyUI · FLUX.1 预装
                           </span>
                         </label>
@@ -673,7 +672,7 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
                       <div>
                         <label htmlFor="offlineDesk" className="font-medium text-sm text-neutral-950 dark:text-white cursor-pointer flex items-center gap-2">
                           <span>清迈 AI 中心线下实体大楼共享工位通票 (与官网空间同步)</span>
-                          <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300">
+                          <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300">
                             1-5楼实体挑高大厦 · 共享工位
                           </span>
                         </label>
@@ -815,7 +814,7 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
                       <div>
                         <label htmlFor="thaiSms" className="font-medium text-sm text-neutral-950 dark:text-white cursor-pointer flex items-center gap-2">
                           <span>泰国原生实体 SIM 卡短信验证码校验 (专属保号)</span>
-                          <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300">
+                          <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300">
                             实体卡保号 · 长期独占
                           </span>
                         </label>
@@ -886,7 +885,7 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
                       <div>
                         <label htmlFor="dedicatedIp" className="font-medium text-sm text-neutral-950 dark:text-white cursor-pointer flex items-center gap-2">
                           <span>独立海外原生静态商业 IP (Clean ASN)</span>
-                          <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300">
+                          <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300">
                             Fraud Score 0 · 专人专享
                           </span>
                         </label>
@@ -998,7 +997,7 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
                           <span className="font-mono font-medium text-sm text-neutral-950 dark:text-white">
                             {symbol}{formatPrice(microTopup.amount)}
                           </span>
-                          <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-mono">
+                          <span className="text-[11px] text-neutral-500 dark:text-neutral-400 font-mono">
                             (服务费: {symbol}{formatPrice(microTopupFee)})
                           </span>
                         </div>
@@ -1074,7 +1073,7 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
                       <div>
                         <label htmlFor="apiRelay" className="font-medium text-sm text-neutral-950 dark:text-white cursor-pointer flex items-center gap-2">
                           <span>全球大模型 API 聚合中转网关 (按量计费)</span>
-                          <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300">
+                          <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300">
                             Claude 5.5/5.6 · GPT-6 · DeepSeek 极速直连
                           </span>
                         </label>
@@ -1141,7 +1140,7 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
                       <div>
                         <label htmlFor="h200Gpu" className="font-medium text-sm text-neutral-950 dark:text-white cursor-pointer flex items-center gap-2">
                           <span>NVIDIA H200 8-GPU 旗舰整机算力节点</span>
-                          <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300">
+                          <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300">
                             8卡整机 · 1,128GB HBM3e
                           </span>
                         </label>
@@ -1231,8 +1230,8 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
                           </div>
                         </div>
                       ) : (
-                        <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200/50 dark:border-amber-900/40 text-xs text-amber-800 dark:text-amber-300 leading-relaxed flex items-start gap-2">
-                          <Sparkles className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                        <div className="p-3 rounded-xl bg-neutral-100 dark:bg-neutral-800/60 border border-neutral-200 dark:border-neutral-700 text-xs text-neutral-700 dark:text-neutral-300 leading-relaxed flex items-start gap-2">
+                          <Sparkles className="w-4 h-4 text-neutral-500 dark:text-neutral-400 shrink-0 mt-0.5" />
                           <span>
                             整机包月方案立享专属独立机架位、双路千兆专线直连、ColaSola 屋顶光伏绿电不间断供电，相比按小时租用立省 25% 以上。
                           </span>
@@ -1276,7 +1275,7 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
                     <div>
                       <label htmlFor="enterprise" className="font-medium text-sm text-neutral-950 dark:text-white cursor-pointer flex items-center gap-2">
                         <span>企业及团队出海综合合规商业主体落地</span>
-                        <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300">
+                        <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300">
                           DBD设立+银行开户享7折 ฿35,000起
                         </span>
                       </label>
@@ -1353,7 +1352,7 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
                     Estimated Investment
                   </span>
                   {activePreset !== "custom" && (
-                    <span className="px-2 py-0.5 rounded text-[11px] font-mono bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-medium">
+                    <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 font-medium">
                       已套用场景套餐
                     </span>
                   )}
@@ -1369,15 +1368,15 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
                 </div>
 
                 {bundleSavingsPerMonth > 0 && (
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 text-xs font-medium">
-                    <Sparkles className="w-3.5 h-3.5" />
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-neutral-100 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 text-xs font-mono">
+                    <Sparkles className="w-3.5 h-3.5 text-neutral-500 dark:text-neutral-400" />
                     <span>场景组合包特惠：每月减免 {symbol}{formatPrice(bundleSavingsPerMonth)}</span>
                   </div>
                 )}
 
                 {discountRate > 0 && (
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 text-xs font-medium ml-2">
-                    <Sparkles className="w-3.5 h-3.5" />
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-neutral-100 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 text-xs font-mono ml-2">
+                    <Sparkles className="w-3.5 h-3.5 text-neutral-500 dark:text-neutral-400" />
                     <span>长期签约 {(discountRate * 100).toFixed(0)}% 折扣已减免</span>
                   </div>
                 )}
@@ -1400,9 +1399,9 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
                 </div>
 
                 {enterprise.enabled && (
-                  <div className="flex justify-between items-center text-emerald-600 dark:text-emerald-400">
+                  <div className="flex justify-between items-center text-neutral-900 dark:text-white">
                     <span>企业及团队出海综合合规 (DBD设立+开户)</span>
-                    <span className="font-medium">7折特惠 ฿35,000起</span>
+                    <span className="font-medium font-mono">7折特惠 ฿35,000起</span>
                   </div>
                 )}
               </div>
@@ -1425,7 +1424,7 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
                 >
                   {copied ? (
                     <>
-                      <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                      <Check className="w-4 h-4 text-neutral-900 dark:text-white" />
                       <span>配置清单已复制到剪贴板！</span>
                     </>
                   ) : (
@@ -1438,21 +1437,21 @@ export default function CloudPricingCalculator({ initialPreset }: CloudPricingCa
               </div>
 
               {/* Confidence Guarantee */}
-              <div className="mt-6 pt-4 border-t border-neutral-200/60 dark:border-neutral-800/60 text-[11px] text-neutral-500 space-y-1.5">
-                <div className="flex items-center gap-1.5 text-neutral-600 dark:text-neutral-400">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+              <div className="mt-6 pt-4 border-t border-neutral-200/60 dark:border-neutral-800/60 text-[11px] text-neutral-500 space-y-2">
+                <div className="flex items-center gap-2 text-neutral-600 dark:text-neutral-400">
+                  <ShieldCheck className="w-3.5 h-3.5 text-neutral-400 dark:text-neutral-500 shrink-0" />
                   <span>纯正泰资合规实体 · GPT-6 / Claude 5.5/5.6 原生网络无封号风险</span>
                 </div>
-                <div className="flex items-center gap-1.5 text-neutral-600 dark:text-neutral-400">
-                  <Coins className="w-3.5 h-3.5 text-blue-500 shrink-0" />
+                <div className="flex items-center gap-2 text-neutral-600 dark:text-neutral-400">
+                  <Coins className="w-3.5 h-3.5 text-neutral-400 dark:text-neutral-500 shrink-0" />
                   <span>对公对私全渠道结算 · 美金 / USDT / 人民币 / 泰铢并开具正规发票</span>
                 </div>
-                <div className="flex items-center gap-1.5 text-neutral-600 dark:text-neutral-400">
-                  <Globe2 className="w-3.5 h-3.5 text-purple-500 shrink-0" />
+                <div className="flex items-center gap-2 text-neutral-600 dark:text-neutral-400">
+                  <Globe2 className="w-3.5 h-3.5 text-neutral-400 dark:text-neutral-500 shrink-0" />
                   <span>自主储备数百个原生静态商业 IP 池 · Fraud Score 0 专机专绑</span>
                 </div>
-                <div className="flex items-center gap-1.5 text-neutral-600 dark:text-neutral-400">
-                  <Building2 className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                <div className="flex items-center gap-2 text-neutral-600 dark:text-neutral-400">
+                  <Building2 className="w-3.5 h-3.5 text-neutral-400 dark:text-neutral-500 shrink-0" />
                   <span>经过 Google 官方实名认证的真实清迈 1600㎡ 独栋科技实体</span>
                 </div>
               </div>

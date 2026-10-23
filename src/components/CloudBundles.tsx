@@ -174,19 +174,18 @@ export default function CloudBundles({ onSelectBundle }: CloudBundlesProps) {
   };
 
   return (
-    <section id="bundles" className="py-24 bg-[#fafafa] dark:bg-[#09090b] border-b border-neutral-200 dark:border-neutral-800 transition-colors">
+    <section id="bundles" className="py-24 bg-[#fafafa] dark:bg-[#070707] border-b border-neutral-200/80 dark:border-neutral-800/80 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-6">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-xs font-mono text-neutral-600 dark:text-neutral-300 mb-3 shadow-2xs">
-              <Sparkles className="w-3.5 h-3.5 text-blue-500" />
-              <span>Curated Scenario Bundles</span>
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-light text-neutral-950 dark:text-white tracking-tight">
+            <span className="text-[11px] font-sans tracking-[0.2em] text-[#86868b] uppercase font-semibold block mb-3">
+              Curated Scenario Bundles
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-light text-[#1d1d1f] dark:text-white tracking-tight">
               场景化精选组合订阅包
             </h2>
-            <p className="text-sm sm:text-base text-neutral-600 dark:text-neutral-400 font-light mt-2">
+            <p className="text-sm sm:text-base text-[#515154] dark:text-[#86868b] font-light mt-2 leading-relaxed">
               告别繁琐单点比价与拼凑，针对本土电商开店、独立开发、AI 协同团队、视觉创作、数字游民与出海企业合规落地量身定制交钥匙方案。
             </p>
           </div>
@@ -214,7 +213,7 @@ export default function CloudBundles({ onSelectBundle }: CloudBundlesProps) {
               }`}
             >
               <span>年付合约</span>
-              <span className="px-1.5 py-0.2 rounded text-[10px] font-semibold bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400">
+              <span className="px-1.5 py-0.2 rounded text-[10px] font-mono font-medium bg-neutral-200 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200">
                 立省 20%
               </span>
             </button>
@@ -237,10 +236,10 @@ export default function CloudBundles({ onSelectBundle }: CloudBundlesProps) {
             return (
               <div
                 key={bundle.id}
-                className={`relative p-7 rounded-3xl flex flex-col justify-between transition-all ${
+                className={`relative p-7 rounded-2xl flex flex-col justify-between transition-all ${
                   bundle.popular
-                    ? "bg-white dark:bg-neutral-900 border-2 border-neutral-950 dark:border-white shadow-lg shadow-neutral-200/50 dark:shadow-black/60 scale-[1.01]"
-                    : "bg-white dark:bg-neutral-950/60 border border-neutral-200/80 dark:border-neutral-800/80 hover:border-neutral-400 dark:hover:border-neutral-600 shadow-xs hover:shadow-md"
+                    ? "bg-white dark:bg-neutral-900/70 border-2 border-neutral-950 dark:border-white shadow-md scale-[1.01]"
+                    : "bg-white dark:bg-neutral-900/40 border border-neutral-200 dark:border-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-700 shadow-xs hover:shadow-md"
                 }`}
               >
                 {bundle.popular && (
@@ -254,10 +253,10 @@ export default function CloudBundles({ onSelectBundle }: CloudBundlesProps) {
                     <span className="text-[10px] font-mono uppercase tracking-wider text-neutral-500 font-semibold block mb-1">
                       {bundle.badge}
                     </span>
-                    <h3 className="text-lg font-medium text-neutral-950 dark:text-white leading-snug">
+                    <h3 className="text-lg font-medium text-[#1d1d1f] dark:text-white leading-snug">
                       {bundle.name}
                     </h3>
-                    <p className="text-xs text-neutral-500 dark:text-neutral-400 font-light mt-2 leading-relaxed min-h-[36px]">
+                    <p className="text-xs text-[#515154] dark:text-[#86868b] font-light mt-2 leading-relaxed min-h-[36px]">
                       {bundle.tagline}
                     </p>
                   </div>
@@ -278,16 +277,16 @@ export default function CloudBundles({ onSelectBundle }: CloudBundlesProps) {
 
                     <div className="flex items-center gap-1.5 mt-1">
                       {isEnterprise ? (
-                        <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
+                        <span className="text-[11px] text-neutral-600 dark:text-neutral-400 font-medium">
                           DBD公司注册 + 银行开户两项享 7 折特惠
                         </span>
                       ) : (
-                        <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
+                        <span className="text-[11px] text-neutral-600 dark:text-neutral-400 font-medium">
                           比单购立省 {bundle.currency}{savings.toLocaleString()}/月
                         </span>
                       )}
                       {billingCycle === "annual" && !isEnterprise && (
-                        <span className="text-[10px] font-mono px-1 rounded bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300">
+                        <span className="text-[10px] font-mono px-1 rounded bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300">
                           年付折上折
                         </span>
                       )}
@@ -299,7 +298,7 @@ export default function CloudBundles({ onSelectBundle }: CloudBundlesProps) {
                     {bundle.includes.map((inc, i) => (
                       <span
                         key={i}
-                        className="px-2 py-0.5 rounded-md bg-neutral-100 dark:bg-neutral-800 text-[10px] font-mono text-neutral-700 dark:text-neutral-300"
+                        className="px-2 py-0.5 rounded-md bg-neutral-100 dark:bg-neutral-800/80 text-[10px] font-mono text-neutral-700 dark:text-neutral-300"
                       >
                         +{inc}
                       </span>
@@ -309,8 +308,8 @@ export default function CloudBundles({ onSelectBundle }: CloudBundlesProps) {
                   {/* Features List */}
                   <div className="space-y-2.5 mb-8">
                     {bundle.features.map((feat, idx) => (
-                      <div key={idx} className="flex items-start gap-2 text-xs text-neutral-700 dark:text-neutral-300 leading-tight">
-                        <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                      <div key={idx} className="flex items-start gap-2 text-xs text-[#515154] dark:text-[#86868b] leading-tight">
+                        <Check className="w-3.5 h-3.5 text-neutral-400 dark:text-neutral-500 shrink-0 mt-0.5" />
                         <span>{feat}</span>
                       </div>
                     ))}

@@ -40,7 +40,7 @@ export default function CloudServices() {
       billingType: "按月订阅",
       title: "轻量共享型云电脑 (微主机)",
       summary: "基于高密度计算池虚拟化的海外轻量云桌面，预装出海防关联与自动化办公环境，超高性价比。",
-      icon: <Server className="w-5 h-5 text-blue-500" />,
+      icon: <Server className="w-5 h-5 text-neutral-800 dark:text-neutral-200" />,
       specs: ["多核弹性调度 vCPU", "4GB - 8GB 动态内存", "50GB NVMe 高速缓存", "中泰 IPLC 直连优化"],
       scenarios: ["跨境电商多店铺安全挂机值守", "社交媒体日常运营与内容发布", "轻量自动化脚本与数据抓取", "团队分布式远程办公终端"],
       highlights: [
@@ -55,7 +55,7 @@ export default function CloudServices() {
       billingType: "按月独享",
       title: "Mac 专属云工作站 (1V1 独享 Apple Silicon)",
       summary: "100% 独立专属物理 Mac mini (M系列芯片)，独占 macOS 完整系统权限、统一内存与千兆网络。",
-      icon: <Monitor className="w-5 h-5 text-purple-500" />,
+      icon: <Monitor className="w-5 h-5 text-neutral-800 dark:text-neutral-200" />,
       specs: ["Apple M 系列芯片独占", "8GB - 16GB 统一极速内存", "256GB - 512GB 高速闪存", "macOS 最新原厂系统支持"],
       scenarios: ["iOS / iPadOS / macOS 软件编译与 Xcode 自动化", "Flutter / React Native 跨平台构建打包", "高安全企业设计与财务保密环境", "海外 Apple 开发者账号认证与应用上架"],
       highlights: [
@@ -70,7 +70,7 @@ export default function CloudServices() {
       billingType: "按月托管",
       title: "物理设备/主机机房托管 (Hardware Colocation)",
       summary: "自带或采购主机入驻清迈独栋机房。提供专属机架位、双路千兆光纤、ColaSola 光伏绿电与 APC UPS 保障。",
-      icon: <HardDrive className="w-5 h-5 text-emerald-500" />,
+      icon: <HardDrive className="w-5 h-5 text-neutral-800 dark:text-neutral-200" />,
       specs: ["标准 1U/2U/塔式机架位", "双路市电 + ColaSola 绿电微电网", "APC 在线式 UPS 零秒倒闸", "双路独立千兆光纤直连"],
       scenarios: ["跨境企业自备高密工控机与边缘节点", "深度学习私有服务器与 NAS 阵列异地备份", "出海长期专属节点硬件资产自主把控", "本地局域网与跨国专线混合云组网"],
       highlights: [
@@ -85,7 +85,7 @@ export default function CloudServices() {
       billingType: "按月保号",
       title: "泰国原生实体卡短信验证码服务 (Thai SMS / OTP)",
       summary: "配备泰国本地实体 SIM 卡池，提供专属长期号码或即时动态验证码，深度适配本土银行与电商核验。",
-      icon: <Smartphone className="w-5 h-5 text-amber-500" />,
+      icon: <Smartphone className="w-5 h-5 text-neutral-800 dark:text-neutral-200" />,
       specs: ["泰国 AIS / TrueMove / Dtac 实体卡", "专属独享号码长期持有保号", "即时 Web 接收面板 / 消息推送", "支持语音短信与关键二次风控"],
       scenarios: ["开通泰国商业银行 App (Kasikorn / SCB / Bangkok Bank)", "Shopee Thailand / Lazada Thailand 本地店入驻", "TikTok Shop 泰国本土店与 Line 官方号注册", "本地水电网络账单绑定与二次身份确认"],
       highlights: [
@@ -100,7 +100,7 @@ export default function CloudServices() {
       billingType: "按月独享",
       title: "独立海外原生静态商业 IP (Clean ASN)",
       summary: "100% 独享纯净海外原生商业 IP，Fraud Score 欺诈检测为 0。一人一 IP 专线专绑，防封店防关联。",
-      icon: <Globe2 className="w-5 h-5 text-indigo-500" />,
+      icon: <Globe2 className="w-5 h-5 text-neutral-800 dark:text-neutral-200" />,
       specs: ["纯净原生海外商业/住宅 ASN", "Fraud Score 欺诈分值恒为 0", "一人一 IP 专线物理绑定", "支持绑定指定云工位与路由器"],
       scenarios: ["TikTok 跨境直播与精细化运营，避免限流降权", "亚马逊、Shopify、Etsy 严风控店铺防关联", "PayPal、Stripe 跨国收款机构风控过审", "海外搜索引擎与商业广告投放安全账户隔离"],
       highlights: [
@@ -115,7 +115,7 @@ export default function CloudServices() {
       billingType: "15%手续费 (最低฿300/最高฿1000)",
       title: "海外大模型会员与泰国本地小额代充代缴 (Claude / ChatGPT / PromptPay)",
       summary: "专为需要开通 Claude 会员 ($20/月)、ChatGPT Plus、海外开发者账号的开发者及本地生活支付设计。提供合规海外卡与手机实名 KYC 充值通道，单笔收取 15% 手续费（最低 ฿300，最高 ฿1,000 封顶）。",
-      icon: <Coins className="w-5 h-5 text-teal-500" />,
+      icon: <Coins className="w-5 h-5 text-neutral-800 dark:text-neutral-200" />,
       specs: ["Claude Pro / Team ($20/月) 会员代开", "ChatGPT Plus / Team 订阅代扣", "泰国本地 PromptPay / TrueMoney 动态扫码代付", "按充值金额 15% 收取（最低 ฿300，最高 ฿1,000 封顶）"],
       scenarios: ["无海外外币卡开发者快速开通与续订 Claude 5.6 与 GPT-6", "彻底避免国内双币卡被 OpenAI / Anthropic 严苛风控拒付与连带封号", "泰国本地 PromptPay 账单、生活话费与小额采购款即时代付", "企业批量员工海外 SaaS 生产力工具月费统一代付与集中报销"],
       highlights: [
@@ -130,7 +130,7 @@ export default function CloudServices() {
       billingType: "按量计费",
       title: "全球大模型 API 聚合中转网关 (AI API Relay)",
       summary: "高可用聚合中转通道，全面支持 Claude 5.5 / 5.6、OpenAI GPT-6、DeepSeek 等顶尖大模型。免翻墙按量计费。",
-      icon: <Bot className="w-5 h-5 text-blue-600" />,
+      icon: <Bot className="w-5 h-5 text-neutral-800 dark:text-neutral-200" />,
       specs: ["兼容 OpenAI / Anthropic 官方接口标准", "聚合 Claude 5.5/5.6 · GPT-6 · DeepSeek", "毫秒级专线直连欧美服务器", "企业级高并发 QPS 弹性保障"],
       scenarios: ["国内应用免翻墙极速调用海外最新模型", "企业 AI 智能体 (Agent) 与知识库 RAG 构建", "多模型负载均衡与自动容灾故障切换", "团队集中用量监控、配额切分与成本控制"],
       highlights: [
@@ -145,7 +145,7 @@ export default function CloudServices() {
       billingType: "时租 1,800฿ / 包月 95万฿",
       title: "NVIDIA H200 8-GPU 旗舰整机算力节点",
       summary: "全球顶级 AI 训练与超长推理整机节点（HGX/SXM5），搭载 8 卡 1,128GB HBM3e 显存。支持弹性时租 (1,800 ฿/小时) 或独享整机包月 (950,000 ฿/月)，配备自建光伏高密绿电机房保障。",
-      icon: <Cpu className="w-5 h-5 text-amber-600" />,
+      icon: <Cpu className="w-5 h-5 text-neutral-800 dark:text-neutral-200" />,
       specs: ["8× 141GB (1,128GB HBM3e) 显存", "4.8 TB/s 显存吞吐速率", "NVLink 900 GB/s 全卡互联", "3.2 Tbps InfiniBand (Quantum-2)"],
       scenarios: ["千亿级基座大模型（GPT-6 / Llama 4 / DeepSeek）全参数微调与持续训练", "企业私有百万 Token 超长上下文 RAG 知识检索", "具身智能与自动驾驶超大规模仿真集群训练", "短周期突发研发弹性租用或长周期独享整机节点"],
       highlights: [
@@ -161,7 +161,7 @@ export default function CloudServices() {
       billingType: "定制咨询",
       title: "企业及团队出海综合合规落地 (Enterprise Entity)",
       summary: "包含泰国公司设立注册、BOI 投资委高新资质申请、LTR 长期签证、银行开户与本地财税代理全托管。",
-      icon: <Building2 className="w-5 h-5 text-emerald-600" />,
+      icon: <Building2 className="w-5 h-5 text-neutral-800 dark:text-neutral-200" />,
       specs: ["泰国商业发展局 (DBD) 注册合规设立", "BOI 科技投资委 100% 外资控股与税收减免", "长期居留签证 (LTR / Smart Visa) 办理", "商业银行公司对公账户开设及网银认证"],
       scenarios: ["中国科技与 AI 公司正式设立东南亚出海桥头堡", "跨境电商与跨国研发团队本地化实体落地", "高净值数字游民与科技高管长期合规旅居居留", "享受泰国 8 年免企业所得税与外籍人才优惠个税政策"],
       highlights: [
@@ -173,18 +173,18 @@ export default function CloudServices() {
   ];
 
   return (
-    <section id="services" className="py-24 bg-[#f8f8fa] dark:bg-[#0c0c0e] border-b border-neutral-200 dark:border-neutral-800 transition-colors">
+    <section id="services" className="py-24 bg-[#fafafa] dark:bg-[#070707] border-b border-neutral-200/80 dark:border-neutral-800/80 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-6">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <div className="max-w-3xl">
-            <span className="text-xs font-semibold uppercase tracking-wider text-neutral-500 font-mono">
+            <span className="text-[11px] font-sans tracking-[0.2em] text-[#86868b] uppercase font-semibold block mb-3">
               Nine Core Services Matrix
             </span>
-            <h2 className="text-3xl sm:text-4xl font-light text-neutral-950 dark:text-white tracking-tight mt-1">
+            <h2 className="text-3xl sm:text-4xl font-light text-[#1d1d1f] dark:text-white tracking-tight">
               全景式出海云工位与算力服务矩阵
             </h2>
-            <p className="text-sm sm:text-base text-neutral-600 dark:text-neutral-400 font-light mt-2">
+            <p className="text-sm sm:text-base text-[#515154] dark:text-[#86868b] font-light mt-2 leading-relaxed">
               从基础云电脑、物理机房托管，到泰国本地合规配套与顶级 H200 算力，为出海企业提供一站式基础设施支持。
             </p>
           </div>
@@ -204,41 +204,41 @@ export default function CloudServices() {
             <div
               key={srv.id}
               onClick={() => setActiveModal(srv)}
-              className="group p-7 rounded-3xl bg-white dark:bg-neutral-950/60 border border-neutral-200/80 dark:border-neutral-800/80 hover:border-neutral-400 dark:hover:border-neutral-600 transition-all cursor-pointer shadow-xs hover:shadow-md flex flex-col justify-between"
+              className="group p-7 rounded-2xl bg-white dark:bg-neutral-900/40 border border-neutral-200 dark:border-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-700 transition-all cursor-pointer shadow-xs hover:shadow-md flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <div className="w-10 h-10 rounded-xl bg-neutral-100 dark:bg-neutral-900 flex items-center justify-center border border-neutral-200/60 dark:border-neutral-800/60 group-hover:scale-105 transition-transform">
+                  <div className="w-10 h-10 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-neutral-800 dark:text-neutral-200">
                     {srv.icon}
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-neutral-100 dark:bg-neutral-900 text-neutral-600 dark:text-neutral-300">
+                    <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400">
                       {srv.badge}
                     </span>
-                    <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 font-medium">
+                    <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-neutral-100 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 font-medium">
                       {srv.billingType}
                     </span>
                   </div>
                 </div>
 
-                <h3 className="text-lg font-medium text-neutral-950 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                <h3 className="text-lg font-medium text-[#1d1d1f] dark:text-white mb-2 group-hover:underline transition-colors">
                   {srv.title}
                 </h3>
-                <p className="text-xs text-neutral-600 dark:text-neutral-400 font-light leading-relaxed mb-6">
+                <p className="text-xs text-[#515154] dark:text-[#86868b] font-light leading-relaxed mb-6">
                   {srv.summary}
                 </p>
 
                 <div className="space-y-2 mb-6">
                   {srv.specs.slice(0, 3).map((spec, idx) => (
-                    <div key={idx} className="flex items-center gap-2 text-xs text-neutral-700 dark:text-neutral-300">
-                      <div className="w-1.5 h-1.5 rounded-full bg-neutral-400 dark:bg-neutral-600" />
+                    <div key={idx} className="flex items-center gap-2 text-xs text-neutral-600 dark:text-neutral-400 font-light">
+                      <div className="w-1.5 h-1.5 rounded-full bg-neutral-300 dark:bg-neutral-600" />
                       <span>{spec}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-neutral-100 dark:border-neutral-800/80 flex items-center justify-between text-xs text-neutral-500 group-hover:text-neutral-950 dark:group-hover:text-white transition-colors">
+              <div className="pt-4 border-t border-neutral-100 dark:border-neutral-800/80 flex items-center justify-between text-xs text-neutral-400 dark:text-neutral-500 group-hover:text-neutral-950 dark:group-hover:text-white transition-colors">
                 <span>查看规格与场景详情</span>
                 <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
               </div>
@@ -303,7 +303,7 @@ export default function CloudServices() {
                   <div className="space-y-2">
                     {activeModal.specs.map((item, idx) => (
                       <div key={idx} className="flex items-start gap-2 text-xs text-neutral-700 dark:text-neutral-300">
-                        <Check className="w-3.5 h-3.5 text-blue-500 shrink-0 mt-0.5" />
+                        <Check className="w-3.5 h-3.5 text-neutral-500 dark:text-neutral-400 shrink-0 mt-0.5" />
                         <span>{item}</span>
                       </div>
                     ))}
@@ -317,7 +317,7 @@ export default function CloudServices() {
                   <div className="space-y-2">
                     {activeModal.scenarios.map((item, idx) => (
                       <div key={idx} className="flex items-start gap-2 text-xs text-neutral-700 dark:text-neutral-300">
-                        <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                        <Check className="w-3.5 h-3.5 text-neutral-500 dark:text-neutral-400 shrink-0 mt-0.5" />
                         <span>{item}</span>
                       </div>
                     ))}
