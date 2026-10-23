@@ -53,7 +53,7 @@ export default function CloudTrustFeatures() {
       badge: "04 / 实体与信誉",
       title: "真实独栋线下科技大厦",
       subtitle: "已正式通过 Google 官方商家实名认证",
-      desc: "拒绝虚拟空壳与‘跑路小作坊’。我们在泰国清迈核心区域拥有 1600㎡ 独立五层科技大楼，集自建高密算力机房、挑高实体工位、ColaSola 屋顶光伏微电网与中泰驻场工程团队于一体。大楼实体已通过 Google 官方商家（Google Business）实名认证并在 Google 地图收录，真实大楼、真实团队，随时欢迎实地参访考察。",
+      desc: "拒绝虚拟空壳与‘跑路小作坊’。清迈 AI 中心作为纯正泰资合规企业，在泰国清迈主城区3公里核心商圈内拥有 1600㎡ 独立五层科技大楼，集自建高密算力机房、挑高实体工位、ColaSola 屋顶光伏微电网与中泰驻场工程团队于一体。大楼实体已通过 Google 官方商家（Google Business）实名认证并在 Google 地图收录，真实大楼、真实团队，随时欢迎实地参访考察。",
       icon: <Building2 className="w-6 h-6 text-amber-500" />,
       tags: ["Google 官方商家认证", "1600㎡ 独栋实体大楼", "自建机房真实可验", "支持随时预约实地考察"],
       gradient: "from-amber-500/10 via-transparent to-transparent",

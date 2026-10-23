@@ -736,7 +736,7 @@ export default function CloudHomePage() {
                   Q: 清迈 AI 中心线下大楼是真实的吗？支持实地参访吗？
                 </h4>
                 <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 font-light leading-relaxed">
-                  A: 100% 真实！清迈 AI 中心坐落于清迈城市核心区 Nong Hoi，为拥有 1600㎡ 建筑面积的独立 5 层科技大厦，包含挑高实体工位、自建高密算力机房与 ColaSola 屋顶光伏系统。大楼已通过 Google 官方商家实名认证（在 Google 地图搜索“Chiang Mai AI Center”即可查看全景街景与认证信息），团队常驻现场，随时欢迎预约实地参观与技术考察！
+                  A: 100% 真实！清迈 AI 中心作为纯正泰资合规企业，实体大厦位于清迈主城区3公里核心商圈内（Nong Hoi），为拥有 1600㎡ 建筑面积的独立 5 层科技大厦，包含挑高实体工位、自建高密算力机房与 ColaSola 屋顶光伏系统。大楼已通过 Google 官方商家实名认证（在 Google 地图搜索“Chiang Mai AI Center”即可查看全景街景与认证信息），团队常驻现场，随时欢迎预约实地参观与技术考察！
                 </p>
               </div>
 
