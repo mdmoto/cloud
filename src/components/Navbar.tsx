@@ -91,14 +91,12 @@ export default function Navbar() {
 
         {/* Right Actions */}
         <div className="hidden sm:flex items-center gap-3">
-          <a
-            href="https://lazzor.com/contract"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/contract"
             className="px-3.5 py-1.5 border border-neutral-200 dark:border-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-700 bg-white/50 dark:bg-neutral-900/50 text-neutral-800 dark:text-neutral-200 text-[13px] font-medium rounded-full transition-all"
           >
             在线签约
-          </a>
+          </Link>
 
           <a
             href="#trial"
@@ -145,15 +143,13 @@ export default function Navbar() {
                 立即申请开通试用
               </a>
 
-              <a
-                href="https://lazzor.com/contract"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/contract"
                 onClick={() => setIsOpen(false)}
                 className="w-full py-2.5 border border-neutral-200 dark:border-neutral-800 text-neutral-800 dark:text-neutral-200 text-center font-medium text-[14px] rounded-xl"
               >
-                在线签署租赁合同 (8折特惠)
-              </a>
+                在线签署服务协议 (8折特惠)
+              </Link>
 
               <div className="py-2 flex flex-col gap-1 border-t border-neutral-100 dark:border-neutral-900">
                 {navLinks.map((item) => (
