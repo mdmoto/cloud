@@ -116,7 +116,7 @@ export default function Footer() {
         {/* Bottom */}
         <div className="pt-8 border-t border-neutral-100 dark:border-neutral-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-neutral-500">
           <div>
-            © {new Date().getFullYear()} Chiang Mai AI Center / ColaSola Co., Ltd. All rights reserved.
+            © {new Date().getFullYear()} Chiang Mai AI Center Co., Ltd. All rights reserved.
           </div>
           <div className="flex items-center gap-6">
             <span>Powered by Clean Solar &amp; Ultra-Low Latency Fiber</span>
