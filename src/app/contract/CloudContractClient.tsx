@@ -632,353 +632,103 @@ export const CLOUD_PLANS: CloudPlanItem[] = [
   },
 ];
 
-// Pure jsPDF Vector Contract Generator for Cloud Services
-async function generateVectorCloudContractPdf(data: {
-  contractSerial: string;
-  contractHash: string;
-  signingDateStr: string;
-  selectedPlan?: CloudPlanItem | null;
-  chosenCpuOption?: MacCpuOption;
-  chosenMemoryOption?: MemoryOption;
-  chosenStorageOption?: StorageOption;
-  chosenAiSubscription?: AiSubscriptionOption | null;
-  selectedAddons: AddonService[];
-  currency: "CNY" | "THB";
-  durationMonths: number;
-  monthlyServiceFee: number;
-  setupFee: number;
-  totalInitialPayment: number;
-  startDate: string;
-  endDate: string;
-  effectiveCustomerName: string;
-  effectiveSignatoryDisplay: string;
-  effectiveSignatoryTitle: string;
-  customerType: "individual" | "company";
-  customerIdNumber: string;
-  customerPhone: string;
-  customerEmail: string;
-  customerAddress: string;
-  logoDataUrl?: string;
-  stampDataUrl?: string;
-  signatureData?: string | null;
-  idImage?: string | null;
-  customAddonEnabled?: boolean;
-  customAddonName?: string;
-  customAddonPrice?: string;
-  customAddonIsOneTime?: boolean;
-}): Promise<string> {
-  const { jsPDF } = await import("jspdf");
-  const doc = new jsPDF({
-    orientation: "portrait",
-    unit: "mm",
-    format: "a4",
-    compress: true,
-  });
+// Chiang Mai AI Center Official Royal Blue Seal Component (Authentic Colasola Circular Seal Style, Pure English)
+export function CmaiOfficialSeal({ className = "w-28 h-28" }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 600 600"
+      className={className}
+      xmlns="http://www.w3.org/2000/svg"
+      style={{ userSelect: "none" }}
+    >
+      <defs>
+        <path id="sealArcTop" d="M 80,300 A 220,220 0 0,1 520,300" fill="none" />
+        <path id="sealArcBottom" d="M 520,300 A 220,220 0 0,1 80,300" fill="none" />
+      </defs>
+      <g stroke="#1d4ed8" fill="#1d4ed8" transform="rotate(-12 300 300)">
+        {/* Double Outer Rings */}
+        <circle cx="300" cy="300" r="280" fill="none" stroke="#1d4ed8" strokeWidth="8" />
+        <circle cx="300" cy="300" r="268" fill="none" stroke="#1d4ed8" strokeWidth="2.5" />
 
-  const pageWidth = 210;
-  const pageHeight = 297;
-  const margin = 14;
-  const contentWidth = pageWidth - margin * 2;
-  const currSym = data.currency === "CNY" ? "¥" : "฿";
+        {/* Double Inner Rings */}
+        <circle cx="300" cy="300" r="185" fill="none" stroke="#1d4ed8" strokeWidth="3.5" />
+        <circle cx="300" cy="300" r="176" fill="none" stroke="#1d4ed8" strokeWidth="1.5" strokeDasharray="6,4" />
 
-  // Header Logo
-  if (data.logoDataUrl && data.logoDataUrl.startsWith("data:")) {
-    try {
-      doc.addImage(data.logoDataUrl, "PNG", margin, 12, 28, 14, undefined, "FAST");
-    } catch {}
-  }
+        {/* Top Arc Text: Pure English Chiang Mai AI Center */}
+        <text
+          fontFamily="Arial, Helvetica, sans-serif"
+          fontSize="29"
+          fontWeight="900"
+          letterSpacing="4.5px"
+          fill="#1d4ed8"
+          stroke="none"
+        >
+          <textPath href="#sealArcTop" startOffset="50%" textAnchor="middle">
+            CHIANG MAI AI CENTER CO., LTD.
+          </textPath>
+        </text>
 
-  // Header Company Info
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(13);
-  doc.setTextColor(15, 23, 42);
-  doc.text("CHIANG MAI AI CENTER · OFFICIAL ELECTRONIC CONTRACT", margin + 32, 17);
+        {/* Bottom Arc Text: Official Seal & Thailand */}
+        <text
+          fontFamily="Arial, Helvetica, sans-serif"
+          fontSize="24"
+          fontWeight="800"
+          letterSpacing="6px"
+          fill="#1d4ed8"
+          stroke="none"
+        >
+          <textPath href="#sealArcBottom" startOffset="50%" textAnchor="middle">
+            ★ OFFICIAL CONTRACT SEAL ★
+          </textPath>
+        </text>
 
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(8);
-  doc.setTextColor(100, 116, 139);
-  doc.text("Chiang Mai AI Center Co., Ltd. · Tax ID: 0505566006478 · cloud.lazzor.com", margin + 32, 22);
-  doc.text("236/105 Chiang Mai AI Center, Moo 6, Mahidol Rd, Nong Hoi, Chiang Mai 50000", margin + 32, 26);
+        {/* Left & Right Separator Dots */}
+        <circle cx="80" cy="300" r="6" fill="#1d4ed8" stroke="none" />
+        <circle cx="520" cy="300" r="6" fill="#1d4ed8" stroke="none" />
 
-  // Right Reference Info
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(8.5);
-  doc.setTextColor(15, 23, 42);
-  doc.text(`Ref: ${data.contractSerial || "CMAI-CLOUD"}`, pageWidth - margin, 17, { align: "right" });
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(7.5);
-  doc.setTextColor(100, 116, 139);
-  doc.text(`Date: ${data.signingDateStr}`, pageWidth - margin, 22, { align: "right" });
-  doc.text(`Hash: ${data.contractHash ? data.contractHash.slice(0, 16) : "SECURE-HASH"}`, pageWidth - margin, 26, { align: "right" });
-
-  // Divider Line
-  doc.setDrawColor(15, 23, 42);
-  doc.setLineWidth(0.6);
-  doc.line(margin, 30, pageWidth - margin, 30);
-
-  // Title
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(12);
-  doc.setTextColor(15, 23, 42);
-  doc.text("ENTERPRISE AI CLOUD WORKSTATION & INFRASTRUCTURE AGREEMENT", margin, 37);
-  doc.setFontSize(7.5);
-  doc.setFont("helvetica", "normal");
-  doc.setTextColor(71, 85, 105);
-  doc.text("Cloud Compute, Hardware Config (M2/M4/M6), Clean IP & AI Services Agreement", margin, 42);
-
-  // Plan Badge
-  doc.setFillColor(238, 242, 255);
-  doc.setDrawColor(199, 210, 254);
-  doc.roundedRect(pageWidth - margin - 58, 33, 58, 12, 2, 2, "FD");
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(8);
-  doc.setTextColor(67, 56, 202);
-  const planBadgeText = data.selectedPlan ? data.selectedPlan.name : "Custom / 0 Total";
-  doc.text(planBadgeText, pageWidth - margin - 29, 38.5, { align: "center" });
-  doc.setFontSize(7);
-  doc.setFont("helvetica", "normal");
-  doc.text(`${currSym}${data.monthlyServiceFee.toLocaleString()}/mo · ${data.durationMonths}M Term`, pageWidth - margin - 29, 42.5, { align: "center" });
-
-  let y = 48;
-
-  // Parties Information Box
-  doc.setFillColor(248, 250, 252);
-  doc.setDrawColor(226, 232, 240);
-  doc.roundedRect(margin, y, contentWidth, 32, 2, 2, "FD");
-
-  doc.setFontSize(7.5);
-  doc.setTextColor(15, 23, 42);
-  doc.setFont("helvetica", "bold");
-  doc.text("SERVICE PROVIDER (Party A):", margin + 4, y + 5.5);
-  doc.setFont("helvetica", "normal");
-  doc.text("Chiang Mai AI Center (Chiang Mai AI Center Co., Ltd.) · Tax ID: 0505566006478", margin + 48, y + 5.5);
-  doc.text("236/105 Chiang Mai AI Center, Moo 6, Mahidol Rd, Nong Hoi, Chiang Mai 50000", margin + 48, y + 9.5);
-
-  doc.setFont("helvetica", "bold");
-  doc.text("CUSTOMER (Party B):", margin + 4, y + 15.5);
-  doc.setFont("helvetica", "normal");
-  doc.text(`${data.effectiveCustomerName || "Customer"} ${data.customerType === "company" ? `(Rep: ${data.effectiveSignatoryDisplay})` : ""}`, margin + 48, y + 15.5);
-  doc.setFont("helvetica", "bold");
-  doc.text("ID / Tax / Business No:", margin + 4, y + 20);
-  doc.setFont("helvetica", "normal");
-  doc.text(String(data.customerIdNumber || "-"), margin + 48, y + 20);
-  doc.setFont("helvetica", "bold");
-  doc.text("Phone & Email:", margin + 4, y + 24.5);
-  doc.setFont("helvetica", "normal");
-  doc.text(`${data.customerPhone || "-"}  |  ${data.customerEmail || "-"}`, margin + 48, y + 24.5);
-  doc.setFont("helvetica", "bold");
-  doc.text("Official Address:", margin + 4, y + 28.5);
-  doc.setFont("helvetica", "normal");
-  const truncatedAddr = data.customerAddress && data.customerAddress.length > 70 ? data.customerAddress.slice(0, 67) + "..." : (data.customerAddress || "-");
-  doc.text(truncatedAddr, margin + 48, y + 28.5);
-
-  y += 37;
-
-  // Section 1: Detailed Resource & Hardware Specifications
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(8);
-  doc.setTextColor(15, 23, 42);
-  doc.text("1. DELIVERABLES & HARDWARE SPECIFICATIONS", margin, y);
-  y += 4;
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(7);
-  doc.setTextColor(51, 65, 85);
-
-  const hwLine = data.selectedPlan
-    ? data.selectedPlan.id === "workstation_888"
-      ? `1.1 Workstation Hardware: 1V1 Apple Silicon [CPU: ${data.chosenCpuOption?.name || "Apple M2"} | RAM: ${data.chosenMemoryOption?.size || "8GB"} | SSD: ${data.chosenStorageOption?.size || "256GB SSD"} | OS: Native macOS].`
-      : `1.1 Workstation Hardware: Lightweight Cloud Computer (Micro PC) [4-8 vCPU / 8-16GB RAM / 120-240GB SSD / Sandbox].`
-    : `1.1 Workstation Hardware: None (Not Selected / Custom Mode).`;
-  doc.text(hwLine, margin, y);
-  y += 3.8;
-
-  const aiLine = data.chosenAiSubscription
-    ? `1.2 Official AI Subscription: ${data.chosenAiSubscription.name} ($${data.chosenAiSubscription.officialPriceUsd}/mo included with compliant card billing).`
-    : `1.2 Official AI Subscription: None (Not Selected).`;
-  doc.text(aiLine, margin, y);
-  y += 3.8;
-  doc.text(`1.3 Network & IP: 1x Dedicated Native Static Commercial IP (Clean ASN, Fraud Score 0) + China-Thai IPLC (<18ms) + VPN.`, margin, y);
-  y += 3.8;
-
-  if (data.selectedAddons && data.selectedAddons.length > 0) {
-    const addonNames = data.selectedAddons.map((a) => a.name.split(" ")[0]).join(", ");
-    doc.text(`1.4 Add-on Services: ${addonNames} (Configured & Delivered simultaneously).`, margin, y);
-    y += 3.8;
-  }
-
-  if (data.customAddonEnabled && (data.customAddonName || data.customAddonPrice)) {
-    const cleanCustomName = (data.customAddonName || "").replace(/[^\x20-\x7E]/g, "").trim();
-    const custDesc = cleanCustomName ? `Custom Item: ${cleanCustomName}` : "Custom Supplementary Item";
-    const custAmt = `${currSym}${(parseFloat(data.customAddonPrice || "0") || 0).toLocaleString()} ${data.customAddonIsOneTime ? "(One-time)" : "/mo"}`;
-    doc.text(`1.5 Custom Supplementary Item: ${custDesc} [${custAmt}].`, margin, y);
-    y += 3.8;
-  }
-
-  doc.text(`1.6 Setup & Term: 1-on-1 Engineering Setup. Service Term: ${data.startDate} to ${data.endDate} (${data.durationMonths} Months).`, margin, y);
-
-  y += 6;
-
-  // Section 2: Financial Schedule Table
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(8);
-  doc.setTextColor(15, 23, 42);
-  doc.text("2. FEES & PAYMENT SCHEDULE", margin, y);
-  y += 4;
-
-  doc.setFillColor(241, 245, 249);
-  doc.rect(margin, y, contentWidth, 5, "F");
-  doc.setFontSize(7);
-  doc.setFont("helvetica", "bold");
-  doc.text("Item / Description", margin + 4, y + 3.6);
-  doc.text(`Amount (${data.currency})`, pageWidth - margin - 4, y + 3.6, { align: "right" });
-  y += 5;
-
-  const feeItems: [string, string][] = [];
-  if (data.selectedPlan) {
-    feeItems.push([`Monthly Cloud Service Fee (${data.selectedPlan.name} with Configured Specs)`, `${currSym}${data.monthlyServiceFee.toLocaleString()} / mo`]);
-    feeItems.push([`Total Subscription Service Fee (${data.durationMonths} Months)`, `${currSym}${(data.monthlyServiceFee * data.durationMonths).toLocaleString()}`]);
-    feeItems.push([`One-time Setup / Initialization Fee`, data.setupFee === 0 ? "Waived (¥0 / Free)" : `${currSym}${data.setupFee.toLocaleString()}`]);
-  } else if (data.monthlyServiceFee > 0) {
-    feeItems.push([`Monthly Recurring Services Fee`, `${currSym}${data.monthlyServiceFee.toLocaleString()} / mo`]);
-    feeItems.push([`Total Subscription Service Fee (${data.durationMonths} Months)`, `${currSym}${(data.monthlyServiceFee * data.durationMonths).toLocaleString()}`]);
-  } else {
-    feeItems.push([`Monthly Recurring Services Fee (None Selected)`, `${currSym}0 / mo`]);
-  }
-  feeItems.push([`TOTAL INITIAL PAYMENT DUE UPON SIGNING`, `${currSym}${data.totalInitialPayment.toLocaleString()}`]);
-
-  feeItems.forEach(([desc, amt], idx) => {
-    const isTotal = idx === feeItems.length - 1;
-    if (isTotal) {
-      doc.setFillColor(236, 253, 245);
-      doc.rect(margin, y, contentWidth, 6, "F");
-      doc.setFont("helvetica", "bold");
-      doc.setTextColor(6, 95, 70);
-    } else {
-      doc.setTextColor(51, 65, 85);
-      doc.setFont("helvetica", "normal");
-    }
-    doc.text(desc, margin + 4, y + 3.8);
-    doc.text(amt, pageWidth - margin - 4, y + 3.8, { align: "right" });
-    doc.setDrawColor(226, 232, 240);
-    doc.line(margin, y + (isTotal ? 6 : 5), pageWidth - margin, y + (isTotal ? 6 : 5));
-    y += isTotal ? 6 : 5;
-  });
-
-  y += 5;
-
-  // Section 3: SLA & Critical Terms
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(8);
-  doc.setTextColor(15, 23, 42);
-  doc.text("3. KEY TERMS, SLA & LEGAL COMPLIANCE", margin, y);
-  y += 4;
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(6.8);
-  doc.setTextColor(71, 85, 105);
-  const clauses = [
-    "3.1 99.9% Service SLA: Party A guarantees 99.9% hardware and line uptime. Outages exceeding 4 hours are compensated 3x in duration.",
-    "3.2 Clean Static IP: Exclusive native commercial IP (Fraud Score 0, Clean ASN). Suitable for App Store dev accounts and global AI models.",
-    "3.3 AI Membership & KYC: Monthly official subscriptions are paid by Party A using compliant overseas cards; anti-ban support included.",
-    "3.4 Code Privacy: Source code never lands off-premise. All customer data, virtual machines, and AI assets belong 100% to Party B.",
-    "3.5 Acceptable Use: Prohibited for DDoS, network attacks, spam, or financial fraud. Violations result in immediate termination.",
-    "3.6 Governing Law: The Laws of the Kingdom of Thailand (Chiang Mai Jurisdiction). Electronic signatures hold full legal validity.",
-  ];
-  clauses.forEach((c) => {
-    doc.text(c, margin, y);
-    y += 3.5;
-  });
-
-  y += 4;
-
-  // Dual Signatures Block
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(8);
-  doc.setTextColor(15, 23, 42);
-  doc.text("SIGNATURES & COUNTERSIGNATURE", margin, y);
-  y += 3.5;
-
-  const sigBoxWidth = (contentWidth - 6) / 2;
-  const sigBoxHeight = 38;
-
-  // Provider Box (Party A)
-  doc.setFillColor(255, 255, 255);
-  doc.setDrawColor(203, 213, 225);
-  doc.roundedRect(margin, y, sigBoxWidth, sigBoxHeight, 2, 2, "D");
-  doc.setFontSize(7.5);
-  doc.setFont("helvetica", "bold");
-  doc.setTextColor(15, 23, 42);
-  doc.text("SERVICE PROVIDER (Party A):", margin + 4, y + 4.5);
-  doc.setFontSize(6.8);
-  doc.setFont("helvetica", "normal");
-  doc.setTextColor(100, 116, 139);
-  doc.text("Chiang Mai AI Center Co., Ltd.", margin + 4, y + 8.5);
-
-  // Official Stamp
-  if (data.stampDataUrl && data.stampDataUrl.startsWith("data:")) {
-    try {
-      doc.addImage(data.stampDataUrl, "PNG", margin + 26, y + 8, 22, 22, undefined, "FAST");
-    } catch {}
-  }
-
-  doc.setFontSize(6.5);
-  doc.setTextColor(15, 23, 42);
-  doc.text("Authorized Representative", margin + 4, y + 31);
-  doc.text(`Date: ${data.signingDateStr}`, margin + 4, y + 35);
-
-  // Customer Box (Party B)
-  const custX = margin + sigBoxWidth + 6;
-  doc.roundedRect(custX, y, sigBoxWidth, sigBoxHeight, 2, 2, "D");
-  doc.setFontSize(7.5);
-  doc.setFont("helvetica", "bold");
-  doc.setTextColor(15, 23, 42);
-  doc.text("CUSTOMER (Party B):", custX + 4, y + 4.5);
-  doc.setFontSize(6.8);
-  doc.setFont("helvetica", "normal");
-  doc.setTextColor(100, 116, 139);
-  doc.text(String(data.effectiveCustomerName || "Customer"), custX + 4, y + 8.5);
-
-  // Customer Signature
-  if (data.signatureData && data.signatureData.startsWith("data:")) {
-    try {
-      doc.addImage(data.signatureData, "PNG", custX + 6, y + 9.5, sigBoxWidth - 12, 19, undefined, "FAST");
-    } catch {}
-  }
-
-  doc.setFontSize(6.5);
-  doc.setTextColor(15, 23, 42);
-  doc.text(`Signed by: ${data.effectiveSignatoryDisplay || data.effectiveCustomerName}`, custX + 4, y + 31);
-  doc.text(`Date: ${data.signingDateStr}`, custX + 4, y + 35);
-
-  // Page 1 Footer
-  doc.setFontSize(6);
-  doc.setTextColor(148, 163, 184);
-  doc.text("Official Cloud Service Protocol · Chiang Mai AI Center Co., Ltd. · Tax ID: 0505566006478 · cloud.lazzor.com", pageWidth / 2, pageHeight - 5, { align: "center" });
-
-  // Optional Annex: Customer ID Document
-  if (data.idImage && data.idImage.startsWith("data:")) {
-    doc.addPage();
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(11);
-    doc.setTextColor(15, 23, 42);
-    doc.text("ANNEX 1: CUSTOMER IDENTITY / BUSINESS LICENSE", margin, 18);
-
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(7.5);
-    doc.setTextColor(100, 116, 139);
-    doc.text(`Contract Serial: ${data.contractSerial} · Subscriber: ${data.effectiveCustomerName}`, margin, 24);
-
-    try {
-      const imgFormat = data.idImage.includes("png") ? "PNG" : "JPEG";
-      doc.addImage(data.idImage, imgFormat, margin, 30, contentWidth, 140, undefined, "FAST");
-    } catch {}
-
-    doc.setFontSize(6.5);
-    doc.setTextColor(148, 163, 184);
-    doc.text("Official Verification Document · Chiang Mai AI Center Cloud", pageWidth / 2, pageHeight - 6, { align: "center" });
-  }
-
-  const rawUri = doc.output("datauristring");
-  return rawUri.split(",")[1];
+        {/* Center Text: Pure English */}
+        <text
+          x="300"
+          y="272"
+          fontFamily="Arial, Helvetica, sans-serif"
+          fontSize="34"
+          fontWeight="900"
+          letterSpacing="3.5px"
+          textAnchor="middle"
+          fill="#1d4ed8"
+          stroke="none"
+        >
+          CHIANG MAI
+        </text>
+        <text
+          x="300"
+          y="318"
+          fontFamily="Arial, Helvetica, sans-serif"
+          fontSize="34"
+          fontWeight="900"
+          letterSpacing="3.5px"
+          textAnchor="middle"
+          fill="#1d4ed8"
+          stroke="none"
+        >
+          AI CENTER
+        </text>
+        <text
+          x="300"
+          y="355"
+          fontFamily="Arial, Helvetica, sans-serif"
+          fontSize="15"
+          fontWeight="700"
+          letterSpacing="6px"
+          textAnchor="middle"
+          fill="#1d4ed8"
+          stroke="none"
+        >
+          THAILAND
+        </text>
+      </g>
+    </svg>
+  );
 }
 
 // Inner Contract Component using useSearchParams
@@ -1541,6 +1291,10 @@ function CloudContractContent() {
           logging: false,
           windowWidth: 850,
           onclone: (clonedDoc) => {
+            clonedDoc.body.style.width = "850px";
+            clonedDoc.body.style.minWidth = "850px";
+            clonedDoc.body.style.margin = "0";
+            clonedDoc.body.style.padding = "0";
             const el = clonedDoc.getElementById(pageIds[i]);
             if (el) {
               el.style.width = "820px";
@@ -1578,19 +1332,18 @@ function CloudContractContent() {
         }
       }
 
-      const rawDataUri = pdf.output("datauristring");
-      if (!rawDataUri || !rawDataUri.includes(",")) {
-        throw new Error("PDF data generation produced empty output");
-      }
-
-      const pdfBase64 = rawDataUri.split(",")[1];
+      const pdfBlob = pdf.output("blob");
+      const blobUrl = URL.createObjectURL(pdfBlob);
       const link = document.createElement("a");
-      link.href = `data:application/pdf;base64,${pdfBase64}`;
+      link.href = blobUrl;
       const safePlanName = currentPlan ? currentPlan.id : "custom_contract";
       link.download = `${contractSerial || "CMAI-CLOUD"}_${safePlanName}.pdf`;
       document.body.appendChild(link);
       link.click();
-      document.body.removeChild(link);
+      setTimeout(() => {
+        document.body.removeChild(link);
+        URL.revokeObjectURL(blobUrl);
+      }, 2500);
     } catch (err: any) {
       console.error("PDF generation error:", err);
       alert("PDF 生成遇到问题，您可直接使用浏览器的【打印合同】功能（或按快捷键 Ctrl+P / Cmd+P）直接另存为高清晰中文版 PDF。");
@@ -2209,14 +1962,15 @@ ${activeAdds.length > 0 ? `● 增值配套服务：${activeAdds.map(a => a.name
               </div>
               <div className="flex flex-col min-w-0">
                 <h1 className="text-xs sm:text-sm font-bold tracking-tight text-neutral-950 dark:text-white truncate flex items-center gap-1.5">
-                  <span>Chiang Mai AI Center 云工位协议</span>
+                  <span className="hidden sm:inline">Chiang Mai AI Center 云工位协议</span>
+                  <span className="sm:hidden font-bold">CMAI 云工位协议</span>
                   {viewMode === "customer" ? (
                     <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 font-semibold whitespace-nowrap">
-                      ✍️ 顾客签署视角
+                      ✍️ 顾客签署
                     </span>
                   ) : (
                     <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-950/80 text-blue-700 dark:text-blue-300 font-semibold whitespace-nowrap">
-                      💼 业务员定制模式
+                      💼 定制模式
                     </span>
                   )}
                 </h1>
@@ -2228,7 +1982,7 @@ ${activeAdds.length > 0 ? `● 增值配套服务：${activeAdds.map(a => a.name
           </div>
 
           {/* Right Action Buttons */}
-          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             {viewMode === "admin" ? (
               <>
                 {/* Switch to customer preview */}
@@ -2246,7 +2000,7 @@ ${activeAdds.length > 0 ? `● 增值配套服务：${activeAdds.map(a => a.name
                 <button
                   type="button"
                   onClick={() => setIsShareModalOpen(true)}
-                  className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-blue-600 hover:bg-blue-700 text-white whitespace-nowrap shadow-xs cursor-pointer transition-all shrink-0"
+                  className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-blue-600 hover:bg-blue-700 text-white whitespace-nowrap shadow-xs cursor-pointer transition-all shrink-0"
                   title="生成并发送专属签署链接与现场二维码"
                 >
                   <QrCode className="w-3.5 h-3.5 shrink-0" />
@@ -2259,12 +2013,12 @@ ${activeAdds.length > 0 ? `● 增值配套服务：${activeAdds.map(a => a.name
               <button
                 type="button"
                 onClick={() => setViewMode("admin")}
-                className="flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-neutral-800 dark:text-neutral-200 border border-neutral-300 dark:border-neutral-700 whitespace-nowrap transition-all cursor-pointer shrink-0"
+                className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-neutral-800 dark:text-neutral-200 border border-neutral-300 dark:border-neutral-700 whitespace-nowrap transition-all cursor-pointer shrink-0"
                 title="返回业务员配置模式"
               >
                 <Settings className="w-3.5 h-3.5 shrink-0" />
                 <span className="hidden sm:inline">切回业务员定制</span>
-                <span className="sm:hidden">切回定制</span>
+                <span className="sm:hidden">定制模式</span>
               </button>
             )}
 
@@ -2292,7 +2046,7 @@ ${activeAdds.length > 0 ? `● 增值配套服务：${activeAdds.map(a => a.name
               type="button"
               onClick={handleDownloadPdf}
               disabled={isExportingPdf}
-              className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 text-xs font-medium rounded-lg bg-neutral-950 hover:bg-neutral-800 dark:bg-white dark:hover:bg-neutral-100 text-white dark:text-neutral-950 whitespace-nowrap transition-colors shadow-xs disabled:opacity-50 cursor-pointer shrink-0"
+              className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3.5 py-1.5 text-xs font-medium rounded-lg bg-neutral-950 hover:bg-neutral-800 dark:bg-white dark:hover:bg-neutral-100 text-white dark:text-neutral-950 whitespace-nowrap transition-colors shadow-xs disabled:opacity-50 cursor-pointer shrink-0"
               title="导出正式中文盖章版 PDF 合同"
             >
               {isExportingPdf ? <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" /> : <Download className="w-3.5 h-3.5 shrink-0" />}
@@ -2871,7 +2625,7 @@ ${activeAdds.length > 0 ? `● 增值配套服务：${activeAdds.map(a => a.name
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${isSelected ? "border-emerald-600 bg-emerald-600 text-white" : "border-neutral-400"}`}>
+                        <div className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 ${isSelected ? "border-emerald-600 bg-emerald-600 text-white" : "border-neutral-400"}`}>
                           {isSelected && <Check className="w-2.5 h-2.5" />}
                         </div>
                         <span className="text-xs font-bold text-neutral-900 dark:text-white">
@@ -2975,7 +2729,7 @@ ${activeAdds.length > 0 ? `● 增值配套服务：${activeAdds.map(a => a.name
                     }`}
                   >
                     <div className="flex items-start gap-2.5">
-                      <div className={`w-4 h-4 rounded mt-0.5 border flex items-center justify-center ${isSelected ? "border-neutral-900 bg-neutral-900 text-white dark:border-white dark:bg-white dark:text-neutral-900" : "border-neutral-400"}`}>
+                      <div className={`w-4 h-4 rounded mt-0.5 border flex items-center justify-center shrink-0 ${isSelected ? "border-neutral-900 bg-neutral-900 text-white dark:border-white dark:bg-white dark:text-neutral-900" : "border-neutral-400"}`}>
                         {isSelected && <Check className="w-3 h-3" />}
                       </div>
                       <div>
@@ -3941,9 +3695,7 @@ ${activeAdds.length > 0 ? `● 增值配套服务：${activeAdds.map(a => a.name
 
                 {/* Official Stamp Img */}
                 <div className="absolute right-6 top-8 w-28 h-28 pointer-events-none opacity-90 select-none">
-                  {stampDataUrl && (
-                    <img src={stampDataUrl} alt="Chiang Mai AI Center Official Seal" className="w-full h-full object-contain" />
-                  )}
+                  <CmaiOfficialSeal className="w-full h-full" />
                 </div>
 
                 <div className="mt-8 text-[11px] text-neutral-700 flex flex-col">
@@ -4460,7 +4212,7 @@ ${activeAdds.length > 0 ? `● 增值配套服务：${activeAdds.map(a => a.name
               <div className="p-3 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-neutral-50/50 dark:bg-neutral-800/40 text-center">
                 <div className="text-[10px] text-neutral-500 uppercase mb-1">甲方授权印章</div>
                 <div className="h-16 flex items-center justify-center">
-                  {stampDataUrl && <img src={stampDataUrl} alt="Official Stamp" className="h-14 object-contain" />}
+                  <CmaiOfficialSeal className="h-14 w-14" />
                 </div>
                 <div className="text-[10px] text-neutral-600 dark:text-neutral-400 mt-1">Chiang Mai AI Center Co., Ltd.</div>
               </div>
