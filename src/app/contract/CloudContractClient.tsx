@@ -48,7 +48,9 @@ import {
   Share2,
   Award,
   X,
-  Unlock
+  Unlock,
+  Eye,
+  Settings
 } from "lucide-react";
 
 // --- Number to Words Utilities ---
@@ -1007,6 +1009,8 @@ function CloudContractContent() {
   const rawCurParam = (searchParams.get("cur") || searchParams.get("currency") || "").trim().toUpperCase();
   const rawSerialParam = (searchParams.get("serial") || searchParams.get("ref") || "").trim();
   const rawLockedParam = (searchParams.get("locked") || "").trim().toLowerCase();
+  const rawSignParam = (searchParams.get("sign") || searchParams.get("mode") || searchParams.get("view") || "").trim().toLowerCase();
+  const isCustomerSignInitial = rawSignParam === "1" || rawSignParam === "client" || rawSignParam === "customer" || rawSignParam === "sign" || rawLockedParam === "1";
 
   // Custom freeform addon params ("其他" 自定义格子)
   const rawCustomAddonParam = (searchParams.get("custom_addon") || "").trim();
@@ -1163,6 +1167,10 @@ function CloudContractContent() {
   const [isLockedConfig, setIsLockedConfig] = useState<boolean>(
     rawLockedParam === "1" || rawLockedParam === "true" || rawLockedParam === "yes"
   );
+  const [viewMode, setViewMode] = useState<"admin" | "customer">(isCustomerSignInitial ? "customer" : "admin");
+  const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
+  const [copiedShareModalLink, setCopiedShareModalLink] = useState<boolean>(false);
+  const [copiedShareModalText, setCopiedShareModalText] = useState<boolean>(false);
   const [isSigned, setIsSigned] = useState<boolean>(false);
   const [signedTimestamp, setSignedTimestamp] = useState<string | null>(null);
   const [isCustomizerOpen, setIsCustomizerOpen] = useState<boolean>(false);
@@ -1620,6 +1628,7 @@ function CloudContractContent() {
     address?: string;
     serial?: string;
     locked?: boolean;
+    sign?: boolean;
     customAddon?: boolean;
     customName?: string;
     customPrice?: string;
@@ -1699,6 +1708,9 @@ function CloudContractContent() {
     const locked = overrideParams?.locked ?? isLockedConfig;
     if (locked) p.set("locked", "1");
 
+    const sign = overrideParams?.sign;
+    if (sign) p.set("sign", "1");
+
     const cAddon = overrideParams?.customAddon ?? customAddonEnabled;
     if (cAddon) {
       p.set("custom_addon", "1");
@@ -1713,11 +1725,72 @@ function CloudContractContent() {
     return `${origin}${pathname}?${p.toString()}`;
   };
 
+  const getCustomerSignUrl = () => {
+    return getShareableUrl({
+      locked: true,
+      sign: true,
+    });
+  };
+
+  const generateCustomerInvitationText = () => {
+    const link = getCustomerSignUrl();
+    const recipient = customerName || companyName || "客户";
+    const specsList: string[] = [];
+    if (currentPlan) {
+      if (currentPlan.id === "workstation_888") {
+        specsList.push(`1V1独享工作站: ${chosenCpu.name} / ${chosenMemory.size}内存 / ${chosenStorage.size}SSD`);
+      } else {
+        specsList.push(`${currentPlan.name} (${microPcTier === "pro" ? "增强型" : "标准型"})`);
+      }
+    }
+    if (chosenAiSubscription) {
+      specsList.push(`官方AI会员: ${chosenAiSubscription.name}`);
+    }
+    if (extraIpCount > 0 || currentPlan) {
+      specsList.push(`独立静态商业IP: ${1 + extraIpCount}个`);
+    }
+    activeAddons.forEach((a) => {
+      specsList.push(`增值服务: ${a.name.split(" ")[0]}`);
+    });
+    if (customAddonEnabled && (customAddonName || customAddonPrice)) {
+      specsList.push(`定制补充项: ${customAddonName || "其他定制"} [${currSym}${customAddonPrice}]`);
+    }
+
+    const planSummary = specsList.length > 0 ? specsList.join(" · ") : "专属自由定制采购方案";
+    const totalWords = currency === "CNY" ? numberToChineseRMB(totalInitialPayment) : numberToEnglishWords(totalInitialPayment, "THB");
+
+    return `【Chiang Mai AI Center · 专属电子协议签署通知】
+尊敬的 ${recipient}：
+您好！为您专属定制的「企业级 AI 云工位与海外算力服务协议」已生成就绪。
+📋 定制交付标的：${planSummary}
+💰 签约首期应付总计：${currSym}${totalInitialPayment.toLocaleString()} (${totalWords})
+🔗 专属在线签署链接：
+${link}
+
+📱 手机微信或相机扫码即可直接查阅并完成原笔迹签署。协议经双方实名签署与存证上链后立即生效，感谢您的信任与合作！`;
+  };
+
   const handleCopyLink = () => {
     const url = getShareableUrl({ locked: isLockedConfig });
     navigator.clipboard.writeText(url).then(() => {
       setCopiedLink(true);
       setTimeout(() => setCopiedLink(false), 2500);
+    });
+  };
+
+  const handleCopyShareModalLink = () => {
+    const link = getCustomerSignUrl();
+    navigator.clipboard.writeText(link).then(() => {
+      setCopiedShareModalLink(true);
+      setTimeout(() => setCopiedShareModalLink(false), 2500);
+    });
+  };
+
+  const handleCopyShareModalText = () => {
+    const text = generateCustomerInvitationText();
+    navigator.clipboard.writeText(text).then(() => {
+      setCopiedShareModalText(true);
+      setTimeout(() => setCopiedShareModalText(false), 2500);
     });
   };
 
@@ -1914,6 +1987,208 @@ ${activeAdds.length > 0 ? `● 增值配套服务：${activeAdds.map(a => a.name
     setIsCertificateOpen(true);
   };
 
+  // --- Dynamic Deliverables & Clauses for Strict Zero-Noise Display ---
+  // Only configured/selected items appear; unselected items NEVER appear in the contract!
+  const deliverableItems: { title: string; enTitle: string; content: React.ReactNode }[] = [];
+
+  if (selectedPlanId) {
+    deliverableItems.push({
+      title: "算力硬件规格",
+      enTitle: "Hardware / CPU / RAM",
+      content: selectedPlanId === "workstation_888" ? (
+        <div className="space-y-1">
+          <div className="font-bold text-neutral-900 flex items-center gap-2">
+            <span>1V1 物理独享工作站：{chosenCpu.name} ({chosenCpu.specs})</span>
+          </div>
+          <div className="text-neutral-600">
+            统一内存: <strong>{chosenMemory.size}</strong> · 存储空间: <strong>{chosenStorage.size}</strong> · 操作系统: 原生 macOS (Sonoma/Sequoia)
+          </div>
+          <div className="text-[11px] text-emerald-700 font-medium">
+            ✓ 物理机完全独占 · 支持 App Store 提审与原生 Xcode 编译开发零卡顿
+          </div>
+        </div>
+      ) : selectedPlanId === "ai_lazy_488" ? (
+        <div className="space-y-1">
+          <div className="font-bold text-neutral-900">
+            轻量共享型云电脑 (微主机) - {microPcTier === "pro" ? "增强型 8 vCPU / 16GB RAM / 240GB NVMe" : "标准型 4 vCPU / 8GB RAM / 120GB NVMe"}
+          </div>
+          <div className="text-neutral-600">
+            运行环境: {microPcOs === "ubuntu" ? "Ubuntu 24.04 LTS (预装防关联指纹浏览器环境)" : "Windows Server 安全隔离开发沙箱"}
+          </div>
+          <div className="text-[11px] text-emerald-700 font-medium">
+            ✓ 预装反指纹伪装与 7×24h 自动化值守守护进程
+          </div>
+        </div>
+      ) : currentPlan ? (
+        <div>{currentPlan.specs.hardware} · {currentPlan.specs.os}</div>
+      ) : null,
+    });
+  }
+
+  if (chosenAiSubscription) {
+    deliverableItems.push({
+      title: "官方 AI 顶配会员规格",
+      enTitle: "Official AI Membership",
+      content: (
+        <div className="space-y-1">
+          <div className="font-bold text-neutral-900 flex items-center gap-2">
+            <span>{chosenAiSubscription.name}</span>
+            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">
+              官方原价 ${chosenAiSubscription.officialPriceUsd}/月 费用全包
+            </span>
+          </div>
+          <div className="text-neutral-600 text-[11px]">
+            {chosenAiSubscription.summary}
+          </div>
+          <div className="text-[11px] text-neutral-600">
+            <strong>保障承诺：</strong>服务商使用合规海外商业外卡代缴代充；服务期内若出现非人为官方风控，提供 24h 免费协助解封或重置更换，免除风控拒付降智。
+          </div>
+        </div>
+      ),
+    });
+  }
+
+  if (selectedPlanId || extraIpCount > 0) {
+    deliverableItems.push({
+      title: "独立静态商业 IP",
+      enTitle: "Dedicated Clean IP",
+      content: (
+        <div className="space-y-0.5">
+          <div className="font-semibold text-neutral-900">
+            {1 + extraIpCount}× 海外原生独占静态商业出口 IP (Clean ASN, Fraud Score 0)
+          </div>
+          <div className="text-neutral-600 text-[11px]">
+            专属绑定所分配云工位/物理机，出口长期固定，不与其他租户共享。支持海外开发者后台、TikTok/亚马逊跨境防关联、App Store 提审与大模型免降智直连。
+          </div>
+        </div>
+      ),
+    });
+
+    deliverableItems.push({
+      title: "网络传输与安全隧道",
+      enTitle: "IPLC Line & Enterprise VPN",
+      content: (
+        <div className="text-neutral-800">
+          <strong>中泰 IPLC / 国际专线端到端直连</strong> (&lt;18ms 超低抖动延迟) + 企业级 VPN 安全传输隧道（提供 WireGuard / Cisco AnyConnect SSL VPN 全平台凭据，数据端到端硬件级加密）。
+        </div>
+      ),
+    });
+  }
+
+  if (activeAddons.length > 0 || (customAddonEnabled && (customAddonName || customAddonPrice))) {
+    deliverableItems.push({
+      title: "选配配套增值服务",
+      enTitle: "Configured Add-ons",
+      content: (
+        <div className="space-y-1">
+          {activeAddons.map((add, aIdx) => (
+            <div key={aIdx} className="flex items-center gap-1.5 text-neutral-800">
+              <span className="font-bold text-emerald-700">● {add.name}:</span>
+              <span>{add.description}</span>
+            </div>
+          ))}
+          {customAddonEnabled && (customAddonName || customAddonPrice) && (
+            <div className="flex items-center gap-1.5 text-neutral-800">
+              <span className="font-bold text-blue-700">● 其他定制补充服务 ({customAddonName || "定制项目"}):</span>
+              <span>
+                费用标准：+{currSym}{(parseFloat(customAddonPrice) || 0).toLocaleString()} {customAddonIsOneTime ? "一次性收费" : "/月"}
+              </span>
+            </div>
+          )}
+        </div>
+      ),
+    });
+  }
+
+  if (selectedPlanId || effectiveSetupFee > 0) {
+    deliverableItems.push({
+      title: "开机/开户技术服务",
+      enTitle: "Setup & Engineering Support",
+      content: (
+        <div className="text-neutral-800 text-[11px] leading-relaxed">
+          含 1 对 1 专属技术支持环境深度调优、专属节点初始化上架、客户端一键直连配置交付、7×24h 物理服务器心跳监控与故障 15 分钟内应急响应。
+        </div>
+      ),
+    });
+  }
+
+  if (deliverableItems.length === 0) {
+    deliverableItems.push({
+      title: "专属定制服务标的",
+      enTitle: "Custom Deliverables",
+      content: (
+        <div className="text-neutral-500 text-[11px] italic">
+          按客户实际选配之专属咨询与技术服务标的约定交付。
+        </div>
+      ),
+    });
+  }
+
+  // Dynamic Legal Terms & SLA Clauses
+  const chineseNumbers = ["第一条", "第二条", "第三条", "第四条", "第五条", "第六条", "第七条", "第八条", "第九条", "第十条"];
+  const dynamicTerms: { title: string; body: string }[] = [];
+
+  if (selectedPlanId) {
+    dynamicTerms.push({
+      title: "服务交付与标的标准：",
+      body: `甲方承诺按照本合同第一条所列明的具体规格标准向乙方交付所选定的 ${
+        selectedPlanId === "workstation_888"
+          ? `Apple Silicon 物理机（包含指定 CPU 芯片型号 ${chosenCpu.name}、统一内存 ${chosenMemory.size} 及 ${chosenStorage.size} SSD 空间）`
+          : selectedPlanId === "ai_lazy_488"
+          ? `轻量微主机算力（${microPcTier === "pro" ? "增强型 8 vCPU / 16GB RAM / 240GB NVMe" : "标准型 4 vCPU / 8GB RAM / 120GB NVMe"}）`
+          : "基础云主机算力"
+      }，并在乙方完成首付款项后 24 小时内完成初始化调优并交付使用凭证。`,
+    });
+  }
+
+  if (chosenAiSubscription) {
+    dynamicTerms.push({
+      title: "官方 AI 会员服务及 KYC 合规代充条款：",
+      body: `甲方负责为乙方开通所选定的官方 AI 会员账号（${chosenAiSubscription.name}），每月官方订阅美金费用全额由甲方承担并由境外正规银行商业外卡代缴。甲方承诺代充渠道合法合规，免除普通虚拟卡封号拒付风险。在服务有效期内，若账号发生非因乙方违法使用造成的官方风控异常，甲方提供全流程免费运维及重置更换保障。`,
+    });
+  }
+
+  if (selectedPlanId || extraIpCount > 0) {
+    dynamicTerms.push({
+      title: "独立商业 IP 与专线 SLA 保障：",
+      body: `甲方交付之 IP 为 100% 海外原生静态商业 IP（固定 IPv4，Clean ASN，欺诈分 0），独占专用，支持苹果开发者账号及各类高风控外服平台。中泰专线提供端到端 <18ms 超低时延。甲方承诺提供 99.9% 算力与网络可用性 SLA；若因甲方机房电力或网络单点故障导致服务连续中断超过 4 小时，甲方按实际中断时长的 3 倍无偿顺延服务期。`,
+    });
+  }
+
+  if (activeAddons.length > 0) {
+    dynamicTerms.push({
+      title: "增值服务交付标准与保障：",
+      body: `若乙方选配泰国实体 SIM 卡保号，甲方承诺提供 100% 真实泰国物理 SIM 卡，全天候保障 OTP 验证码接收；若乙方选配机房托管，甲方承诺提供双路市电、清洁太阳能光伏绿电与 APC 在线式 UPS 零秒倒闸供电；若选配出海合规商业落地包，甲方承诺负责泰国 DBD 公司注册、银行对公账户开设及合规材料交付；若选配线下大楼共享工位，乙方享有清迈 AI 中心独栋 5 层实体大厦工位通行、万兆光纤与现磨咖啡权益。`,
+    });
+  }
+
+  if (customAddonEnabled && (customAddonName || customAddonPrice)) {
+    dynamicTerms.push({
+      title: "定制补充项目特别约定：",
+      body: `双方确认并同意本合同约定的定制补充项目「${customAddonName || "其他定制"}」，计费标准为 ${currSym}${parseFloat(customAddonPrice) || 0}（${customAddonIsOneTime ? "一次性收费" : "按月计费"}）。甲方承诺按照双方商务沟通确认的技术规范与工作范围严格履行交付与技术支持。`,
+    });
+  }
+
+  dynamicTerms.push({
+    title: "数据安全、知识产权与代码不落地保障：",
+    body: `甲方严格履行保密义务，采用机房物理隔离与全链路加密机制，确保“源码不落地、数据私有化”。乙方在云工位内创建、存储、运行的所有代码、项目工程、模型权重及业务资产，其 100% 知识产权与所有权独家归乙方所有。甲方绝不以任何形式审查、复制、镜像或向第三方透露乙方数据资产。`,
+  });
+
+  dynamicTerms.push({
+    title: "服务期限与续费规则：",
+    body: `本协议服务有效期自 ${startDate} 起至 ${endDate} 止（共 ${durationMonths} 个月）。服务期满前 7 个工作日，甲方将提醒乙方办理续费。若乙方选择年付合约，直接免收首月开机/开户技术服务费并享受合约优惠费率。`,
+  });
+
+  dynamicTerms.push({
+    title: "合规使用守则与终止权：",
+    body: `乙方承诺将本服务严格用于正规的软件研发、出海业务、AI 办公与电商合规运营，严禁从事任何网络攻击（如 DDoS、端口嗅探）、电信诈骗、垃圾邮件轰炸或违反中泰两国法律法规的行为。如乙方违规操作导致 IP 被封或列入黑名单，甲方有权立即解除合同并不予退还剩余款项。`,
+  });
+
+  dynamicTerms.push({
+    title: "电子签名效力与司法管辖：",
+    body: `双方确认本协议采用电子签名、数字时间戳及 SHA-256 哈希存证，具备与纸质合同完全同等的法律证明力。因本合同引起的争议，双方应友好协商，协商不成的，由泰王国清迈当地管辖法院审理。`,
+  });
+
   return (
     <div className="min-h-screen bg-neutral-100 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 flex flex-col font-sans transition-colors">
       {/* Top Navbar: Mobile-First Responsive Design */}
@@ -1935,9 +2210,15 @@ ${activeAdds.length > 0 ? `● 增值配套服务：${activeAdds.map(a => a.name
               <div className="flex flex-col min-w-0">
                 <h1 className="text-xs sm:text-sm font-bold tracking-tight text-neutral-950 dark:text-white truncate flex items-center gap-1.5">
                   <span>Chiang Mai AI Center 云工位协议</span>
-                  <span className="hidden md:inline text-[10px] font-mono px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-950/80 text-blue-700 dark:text-blue-300 font-semibold whitespace-nowrap">
-                    ELECTRONIC SIGNING
-                  </span>
+                  {viewMode === "customer" ? (
+                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 font-semibold whitespace-nowrap">
+                      ✍️ 顾客签署视角
+                    </span>
+                  ) : (
+                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-950/80 text-blue-700 dark:text-blue-300 font-semibold whitespace-nowrap">
+                      💼 业务员定制模式
+                    </span>
+                  )}
                 </h1>
                 <span className="text-[10px] sm:text-[11px] text-neutral-500 font-mono truncate">
                   REF: {contractSerial ? (contractSerial.length > 20 ? contractSerial.slice(0, 18) + "..." : contractSerial) : "CMAI-CLOUD"}
@@ -1948,23 +2229,50 @@ ${activeAdds.length > 0 ? `● 增值配套服务：${activeAdds.map(a => a.name
 
           {/* Right Action Buttons */}
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-            {/* Customizer Button */}
-            <button
-              type="button"
-              onClick={handleOpenCustomizer}
-              className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-blue-600 hover:bg-blue-700 text-white whitespace-nowrap shadow-xs cursor-pointer transition-all shrink-0"
-              title="定制专属合同链接"
-            >
-              <Sparkles className="w-3.5 h-3.5 shrink-0" />
-              <span className="hidden sm:inline">定制专属签约链接</span>
-              <span className="sm:hidden">定制链接</span>
-            </button>
+            {viewMode === "admin" ? (
+              <>
+                {/* Switch to customer preview */}
+                <button
+                  type="button"
+                  onClick={() => setViewMode("customer")}
+                  className="hidden md:flex items-center gap-1 px-2.5 sm:px-3 py-1.5 text-xs font-medium rounded-lg border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-800 text-neutral-700 dark:text-neutral-300 whitespace-nowrap transition-colors cursor-pointer shrink-0"
+                  title="以顾客视角预览最终签署文档"
+                >
+                  <Eye className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                  <span>顾客视角</span>
+                </button>
+
+                {/* Send to Customer CTA */}
+                <button
+                  type="button"
+                  onClick={() => setIsShareModalOpen(true)}
+                  className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-blue-600 hover:bg-blue-700 text-white whitespace-nowrap shadow-xs cursor-pointer transition-all shrink-0"
+                  title="生成并发送专属签署链接与现场二维码"
+                >
+                  <QrCode className="w-3.5 h-3.5 shrink-0" />
+                  <span className="hidden sm:inline">📤 发送给客户 (链接与二维码)</span>
+                  <span className="sm:hidden">发给客户</span>
+                </button>
+              </>
+            ) : (
+              /* Customer mode: Salesperson preview back to admin */
+              <button
+                type="button"
+                onClick={() => setViewMode("admin")}
+                className="flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-neutral-800 dark:text-neutral-200 border border-neutral-300 dark:border-neutral-700 whitespace-nowrap transition-all cursor-pointer shrink-0"
+                title="返回业务员配置模式"
+              >
+                <Settings className="w-3.5 h-3.5 shrink-0" />
+                <span className="hidden sm:inline">切回业务员定制</span>
+                <span className="sm:hidden">切回定制</span>
+              </button>
+            )}
 
             {isSigned && (
               <button
                 type="button"
                 onClick={() => setIsCertificateOpen(true)}
-                className="hidden md:flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white whitespace-nowrap shadow-xs cursor-pointer shrink-0"
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white whitespace-nowrap shadow-xs cursor-pointer shrink-0"
               >
                 <Award className="w-3.5 h-3.5 shrink-0" />
                 <span>存证证书</span>
@@ -1973,17 +2281,8 @@ ${activeAdds.length > 0 ? `● 增值配套服务：${activeAdds.map(a => a.name
 
             <button
               type="button"
-              onClick={handleCopyLink}
-              className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-800 text-neutral-700 dark:text-neutral-300 whitespace-nowrap transition-colors cursor-pointer shrink-0"
-            >
-              {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" /> : <Tag className="w-3.5 h-3.5 shrink-0" />}
-              <span>{copiedLink ? "已复制" : "分享"}</span>
-            </button>
-
-            <button
-              type="button"
               onClick={handleNativePrint}
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-800 text-neutral-800 dark:text-neutral-200 whitespace-nowrap transition-colors shadow-xs cursor-pointer shrink-0"
+              className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-800 text-neutral-800 dark:text-neutral-200 whitespace-nowrap transition-colors shadow-xs cursor-pointer shrink-0"
             >
               <Printer className="w-3.5 h-3.5 shrink-0" />
               <span>打印</span>
@@ -1994,7 +2293,7 @@ ${activeAdds.length > 0 ? `● 增值配套服务：${activeAdds.map(a => a.name
               onClick={handleDownloadPdf}
               disabled={isExportingPdf}
               className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 text-xs font-medium rounded-lg bg-neutral-950 hover:bg-neutral-800 dark:bg-white dark:hover:bg-neutral-100 text-white dark:text-neutral-950 whitespace-nowrap transition-colors shadow-xs disabled:opacity-50 cursor-pointer shrink-0"
-              title="导出矢量 PDF"
+              title="导出正式中文盖章版 PDF 合同"
             >
               {isExportingPdf ? <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" /> : <Download className="w-3.5 h-3.5 shrink-0" />}
               <span className="hidden sm:inline">导出 PDF</span>
@@ -2027,10 +2326,50 @@ ${activeAdds.length > 0 ? `● 增值配套服务：${activeAdds.map(a => a.name
       `}</style>
 
       {/* Main Container */}
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Left Side: Interactive Configurator */}
-        <section className="lg:col-span-5 flex flex-col gap-6 print:hidden">
-          {/* Locked Config Alert Banner */}
+      <main className={`flex-1 mx-auto w-full py-6 sm:py-8 ${
+        viewMode === "customer"
+          ? "max-w-4xl px-3 sm:px-6 flex flex-col items-center gap-6"
+          : "max-w-7xl px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-12 gap-8"
+      }`}>
+        {/* Left Side: Interactive Configurator (Admin Mode Only) */}
+        {viewMode === "admin" && (
+          <section className="lg:col-span-5 flex flex-col gap-6 print:hidden">
+            {/* Primary Action Card: Send to Customer Link & QR */}
+            <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white shadow-md flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 font-bold text-sm">
+                  <QrCode className="w-5 h-5 text-white" />
+                  <span>发送给客户签署</span>
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/20 text-white">
+                  专属锁定通道
+                </span>
+              </div>
+              <p className="text-xs text-blue-100 leading-relaxed">
+                在下方选择客户所需服务并填写个人/企业信息后，点击生成带锁定配置的专属链接与现场二维码，客户仅需核对签署。
+              </p>
+              <div className="flex items-center gap-2 pt-1">
+                <button
+                  type="button"
+                  onClick={() => setIsShareModalOpen(true)}
+                  className="flex-1 py-2 px-3 rounded-xl bg-white text-blue-700 font-bold text-xs hover:bg-blue-50 transition-colors shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <QrCode className="w-3.5 h-3.5" />
+                  <span>生成客户签署链接与二维码</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setViewMode("customer")}
+                  className="py-2 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium text-xs border border-white/20 transition-colors flex items-center justify-center gap-1 cursor-pointer shrink-0"
+                  title="切换到顾客视角预览"
+                >
+                  <Eye className="w-3.5 h-3.5" />
+                  <span>顾客视角</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Locked Config Alert Banner */}
           {isLockedConfig && (
             <div className="bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 rounded-2xl p-4 flex items-start gap-3 shadow-xs">
               <Lock className="w-5 h-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
@@ -3223,9 +3562,49 @@ ${activeAdds.length > 0 ? `● 增值配套服务：${activeAdds.map(a => a.name
             </div>
           </div>
         </section>
+        )}
 
-        {/* Right Side: The Official Digital Contract Sheet */}
-        <section className="lg:col-span-7 flex flex-col items-center">
+        {/* Right Side: The Official Digital Contract Sheet & Customer Flow */}
+        <section className={viewMode === "customer" ? "w-full flex flex-col items-center gap-6" : "lg:col-span-7 flex flex-col items-center"}>
+          {/* Customer Mode Top Banner */}
+          {viewMode === "customer" && (
+            <div className="w-full max-w-[820px] bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white rounded-2xl p-4 sm:p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-start gap-3 min-w-0">
+                <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center shrink-0">
+                  <ShieldCheck className="w-6 h-6 text-white" />
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-[10px] font-mono font-bold tracking-wider px-2 py-0.5 rounded bg-white/20 text-white uppercase">
+                      官方定制方案 · 待实名签署
+                    </span>
+                    <span className="text-xs font-mono text-blue-100">
+                      REF: {contractSerial}
+                    </span>
+                  </div>
+                  <h2 className="text-sm sm:text-base font-bold mt-1 text-white">
+                    尊敬的 {effectiveCustomerName} 您好！
+                  </h2>
+                  <p className="text-xs text-blue-100 mt-0.5 leading-relaxed">
+                    Chiang Mai AI Center 商务顾问已为您定制好专属服务协议。请逐项核对下方标的与费用明细，并在文末完成电子签名确认。
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                <button
+                  type="button"
+                  onClick={() => setViewMode("admin")}
+                  className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-semibold border border-white/20 transition-all flex items-center gap-1.5 cursor-pointer"
+                  title="切回业务员定制模式"
+                >
+                  <Settings className="w-3.5 h-3.5" />
+                  <span>切回定制</span>
+                </button>
+              </div>
+            </div>
+          )}
+
           <div
             id="printable-contract"
             className="w-full max-w-[820px] bg-white text-neutral-900 rounded-2xl shadow-lg border border-neutral-200 overflow-hidden print:border-none print:shadow-none print:p-0 print:m-0 print:max-w-none print:w-full print:rounded-none"
@@ -3301,7 +3680,7 @@ ${activeAdds.length > 0 ? `● 增值配套服务：${activeAdds.map(a => a.name
                   </span>
                 </div>
                 <div className="text-lg font-black text-neutral-950 mt-1">
-                  {currentPlan ? currentPlan.name : "未选配基础云主机"}
+                  {currentPlan ? currentPlan.name : "企业级定制服务方案"}
                   {currentPlan && (
                     <span className="text-xs font-normal text-neutral-500 ml-2">
                       ({currentPlan.enName})
@@ -3309,7 +3688,7 @@ ${activeAdds.length > 0 ? `● 增值配套服务：${activeAdds.map(a => a.name
                   )}
                 </div>
                 <div className="text-xs text-neutral-600 mt-0.5">
-                  {currentPlan ? currentPlan.description : "当前未选配基础硬件云主机。若选购增值服务或AI会员将按单项计费，全部未选则总额为 ¥0。"}
+                  {currentPlan ? currentPlan.description : "根据客户专属商务需求定制之技术服务及配套交付标的（详见下方清单）。"}
                 </div>
               </div>
 
@@ -3379,150 +3758,17 @@ ${activeAdds.length > 0 ? `● 增值配套服务：${activeAdds.map(a => a.name
               <div className="rounded-xl border border-neutral-200 overflow-x-auto text-xs">
                 <table className="w-full min-w-[520px] text-left border-collapse">
                   <tbody className="divide-y divide-neutral-200">
-                    {/* Item 1: Hardware & Chip Specs */}
-                    <tr className="bg-neutral-50/50">
-                      <td className="py-2.5 px-3.5 font-bold text-neutral-800 w-1/4">
-                        算力硬件规格
-                        <span className="block text-[10px] font-normal text-neutral-500">Hardware / CPU / RAM</span>
-                      </td>
-                      <td className="py-2.5 px-3.5 text-neutral-700">
-                        {!selectedPlanId ? (
-                          <div className="text-neutral-500 text-[11px] italic">
-                            未选定基础云主机硬件（按需纯定制模式）
-                          </div>
-                        ) : selectedPlanId === "workstation_888" ? (
-                          <div className="space-y-1">
-                            <div className="font-bold text-neutral-900 flex items-center gap-2">
-                              <span>1V1 物理独享工作站：{chosenCpu.name} ({chosenCpu.specs})</span>
-                            </div>
-                            <div className="text-neutral-600">
-                              统一内存: <strong>{chosenMemory.size}</strong> · 存储空间: <strong>{chosenStorage.size}</strong> · 操作系统: 原生 macOS (Sonoma/Sequoia)
-                            </div>
-                            <div className="text-[11px] text-emerald-700 font-medium">
-                              ✓ 物理机完全独占 · 支持 App Store 提审与原生 Xcode 编译开发零卡顿
-                            </div>
-                          </div>
-                        ) : selectedPlanId === "ai_lazy_488" ? (
-                          <div className="space-y-1">
-                            <div className="font-bold text-neutral-900">
-                              轻量共享型云电脑 (微主机) - {microPcTier === "pro" ? "增强型 8 vCPU / 16GB RAM / 240GB NVMe" : "标准型 4 vCPU / 8GB RAM / 120GB NVMe"}
-                            </div>
-                            <div className="text-neutral-600">
-                              运行环境: {microPcOs === "ubuntu" ? "Ubuntu 24.04 LTS (预装防关联指纹浏览器环境)" : "Windows Server 安全隔离开发沙箱"}
-                            </div>
-                            <div className="text-[11px] text-emerald-700 font-medium">
-                              ✓ 预装反指纹伪装与 7×24h 自动化值守守护进程
-                            </div>
-                          </div>
-                        ) : currentPlan ? (
-                          <div>{currentPlan.specs.hardware} · {currentPlan.specs.os}</div>
-                        ) : (
-                          <div className="text-neutral-500">未选配</div>
-                        )}
-                      </td>
-                    </tr>
-
-                    {/* Item 2: AI Subscription Specs */}
-                    <tr>
-                      <td className="py-2.5 px-3.5 font-bold text-neutral-800">
-                        AI 顶配会员规格
-                        <span className="block text-[10px] font-normal text-neutral-500">Official AI Membership</span>
-                      </td>
-                      <td className="py-2.5 px-3.5 text-neutral-700">
-                        {chosenAiSubscription ? (
-                          <div className="space-y-1">
-                            <div className="font-bold text-neutral-900 flex items-center gap-2">
-                              <span>{chosenAiSubscription.name}</span>
-                              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">
-                                官方原价 ${chosenAiSubscription.officialPriceUsd}/月 费用全包
-                              </span>
-                            </div>
-                            <div className="text-neutral-600 text-[11px]">
-                              {chosenAiSubscription.summary}
-                            </div>
-                            <div className="text-[11px] text-neutral-600">
-                              <strong>保障承诺：</strong>服务商使用合规海外商业外卡代缴代充；服务期内若出现非人为官方风控，提供 24h 免费协助解封或重置更换，免除风控拒付降智。
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="text-neutral-500 text-[11px] italic">
-                            未选配官方 AI 会员账号（不产生 AI 订阅费用）
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-
-                    {/* Item 3: Dedicated Clean IP */}
-                    <tr className="bg-neutral-50/50">
-                      <td className="py-2.5 px-3.5 font-bold text-neutral-800">
-                        独立静态商业 IP
-                        <span className="block text-[10px] font-normal text-neutral-500">Dedicated Clean IP</span>
-                      </td>
-                      <td className="py-2.5 px-3.5 text-neutral-700">
-                        <div className="space-y-0.5">
-                          <div className="font-semibold text-neutral-900">
-                            {1 + extraIpCount}× 海外原生独占静态商业出口 IP (Clean ASN, Fraud Score 0)
-                          </div>
-                          <div className="text-neutral-600 text-[11px]">
-                            专属绑定所分配云工位/物理机，出口长期固定，不与其他租户共享。支持海外开发者后台、TikTok/亚马逊跨境防关联、App Store 提审与大模型免降智直连。
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-
-                    {/* Item 4: Dedicated Network & Tunnel */}
-                    <tr>
-                      <td className="py-2.5 px-3.5 font-bold text-neutral-800">
-                        网络传输与安全隧道
-                        <span className="block text-[10px] font-normal text-neutral-500">IPLC Line & Enterprise VPN</span>
-                      </td>
-                      <td className="py-2.5 px-3.5 text-neutral-700">
-                        <div className="text-neutral-800">
-                          <strong>中泰 IPLC / 国际专线端到端直连</strong> (&lt;18ms 超低抖动延迟) + 企业级 VPN 安全传输隧道（提供 WireGuard / Cisco AnyConnect SSL VPN 全平台凭据，数据端到端硬件级加密）。
-                        </div>
-                      </td>
-                    </tr>
-
-                    {/* Item 5: Add-ons Summary if any */}
-                    {(activeAddons.length > 0 || (customAddonEnabled && (customAddonName || customAddonPrice))) && (
-                      <tr className="bg-neutral-50/50">
-                        <td className="py-2.5 px-3.5 font-bold text-neutral-800">
-                          选配配套增值服务
-                          <span className="block text-[10px] font-normal text-neutral-500">Configured Add-ons</span>
+                    {deliverableItems.map((item, idx) => (
+                      <tr key={idx} className={idx % 2 === 0 ? "bg-neutral-50/50" : "bg-white"}>
+                        <td className="py-2.5 px-3.5 font-bold text-neutral-800 w-1/4 align-top">
+                          {item.title}
+                          <span className="block text-[10px] font-normal text-neutral-500">{item.enTitle}</span>
                         </td>
-                        <td className="py-2.5 px-3.5 text-neutral-700">
-                          <div className="space-y-1">
-                            {activeAddons.map((add, aIdx) => (
-                              <div key={aIdx} className="flex items-center gap-1.5 text-neutral-800">
-                                <span className="font-bold text-emerald-700">● {add.name}:</span>
-                                <span>{add.description}</span>
-                              </div>
-                            ))}
-                            {customAddonEnabled && (customAddonName || customAddonPrice) && (
-                              <div className="flex items-center gap-1.5 text-neutral-800">
-                                <span className="font-bold text-blue-700">● 其他定制补充服务 ({customAddonName || "定制项目"}):</span>
-                                <span>
-                                  费用标准：+{currSym}{(parseFloat(customAddonPrice) || 0).toLocaleString()} {customAddonIsOneTime ? "一次性收费" : "/月"}
-                                </span>
-                              </div>
-                            )}
-                          </div>
+                        <td className="py-2.5 px-3.5 text-neutral-700 align-top">
+                          {item.content}
                         </td>
                       </tr>
-                    )}
-
-                    {/* Item 6: Setup & Support */}
-                    <tr>
-                      <td className="py-2.5 px-3.5 font-bold text-neutral-800">
-                        开机/开户技术服务
-                        <span className="block text-[10px] font-normal text-neutral-500">Setup & Engineering Support</span>
-                      </td>
-                      <td className="py-2.5 px-3.5 text-neutral-700">
-                        <div className="text-neutral-800 text-[11px] leading-relaxed">
-                          含 1 对 1 专属技术支持环境深度调优、专属节点初始化上架、客户端一键直连配置交付、7×24h 物理服务器心跳监控与故障 15 分钟内应急响应。
-                        </div>
-                      </td>
-                    </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
@@ -3570,17 +3816,8 @@ ${activeAdds.length > 0 ? `● 增值配套服务：${activeAdds.map(a => a.name
                           {currSym}{(effectiveMonthlyFee * durationMonths).toLocaleString()}
                         </td>
                       </tr>
-                    ) : (
-                      <tr>
-                        <td className="py-2.5 px-3 text-neutral-500 italic">
-                          未选配按月基础订阅产品 (月服务费为 ¥0)
-                        </td>
-                        <td className="py-2.5 px-3 text-neutral-400">-</td>
-                        <td className="py-2.5 px-3 text-neutral-400">{currSym}0 / 月</td>
-                        <td className="py-2.5 px-3 text-right font-medium text-neutral-400">{currSym}0</td>
-                      </tr>
-                    )}
-                    {currentPlan && (
+                    ) : null}
+                    {currentPlan && baseSetupFee > 0 && (
                       <tr>
                         <td className="py-2.5 px-3 font-medium">
                           专属物理节点初始化与 1 对 1 环境调优开机/开户服务费
@@ -3681,45 +3918,12 @@ ${activeAdds.length > 0 ? `● 增值配套服务：${activeAdds.map(a => a.name
                 3. TERMS & CONDITIONS (核心基础条款与服务保障细则)
               </h3>
 
-              <div>
-                <strong className="text-neutral-900">第一条 服务交付与标的标准：</strong>
-                甲方承诺按照本合同第一条所列明的具体规格标准向乙方交付所选定的 Apple Silicon 物理机（包含指定 CPU 芯片型号 {chosenCpu.name}、统一内存 {chosenMemory.size} 及 {chosenStorage.size} SSD 空间）或微主机算力，并配置 1× 独享海外原生静态商业 IP 及专线 VPN 账号。甲方承诺在乙方完成首付款项后 24 小时内完成初始化调优并交付使用凭证。
-              </div>
-
-              <div>
-                <strong className="text-neutral-900">第二条 官方 AI 会员服务及 KYC 合规代充条款：</strong>
-                甲方负责为乙方开通所选定的官方 AI 会员账号（ChatGPT Plus / Claude Pro / Team 席位），每月官方订阅美金费用全额由甲方承担并由境外正规银行商业外卡代缴。甲方承诺代充渠道合法合规，免除普通虚拟卡封号拒付风险。在服务有效期内，若账号发生非因乙方违法使用造成的官方风控异常，甲方提供全流程免费运维及重置更换保障。
-              </div>
-
-              <div>
-                <strong className="text-neutral-900">第三条 独立商业 IP 与专线 SLA 保障：</strong>
-                甲方交付之 IP 为 100% 原生静态商业 IP（固定 IPv4，Clean ASN，欺诈分 0），独占专用，支持苹果开发者账号及各类高风控外服平台。中泰专线提供端到端 &lt;18ms 超低时延。甲方承诺提供 99.9% 算力与网络可用性 SLA；若因甲方机房电力或网络单点故障导致服务连续中断超过 4 小时，甲方按实际中断时长的 3 倍无偿顺延服务期。
-              </div>
-
-              <div>
-                <strong className="text-neutral-900">第四条 增值服务交付标准与保障：</strong>
-                若乙方选配泰国实体 SIM 卡保号，甲方承诺提供 100% 真实泰国物理 SIM 卡，全天候保障 OTP 验证码接收；若乙方选配机房托管，甲方承诺提供双路市电、清洁太阳能光伏绿电与 APC 在线式 UPS 零秒倒闸供电；若选配线下大楼共享工位，乙方享有清迈 AI 中心独栋 5 层实体大厦工位通行、万兆光纤与现磨咖啡权益。
-              </div>
-
-              <div>
-                <strong className="text-neutral-900">第五条 数据安全、知识产权与代码不落地保障：</strong>
-                甲方严格履行保密义务，采用机房物理隔离与全链路加密机制，确保“源码不落地、数据私有化”。乙方在云工位内创建、存储、运行的所有代码、项目工程、模型权重及业务资产，其 100% 知识产权与所有权独家归乙方所有。甲方绝不以任何形式审查、复制、镜像或向第三方透露乙方数据资产。
-              </div>
-
-              <div>
-                <strong className="text-neutral-900">第六条 服务期限与续费规则：</strong>
-                本协议服务有效期自 <strong>{startDate}</strong> 起至 <strong>{endDate}</strong> 止（共 {durationMonths} 个月）。服务期满前 7 个工作日，甲方将提醒乙方办理续费。若乙方选择年付合约，直接免收首月开机/开户技术服务费并享受合约优惠费率。
-              </div>
-
-              <div>
-                <strong className="text-neutral-900">第七条 合规使用守则与终止权：</strong>
-                乙方承诺将本服务严格用于正规的软件研发、出海业务、AI 办公与电商合规运营，严禁从事任何网络攻击（如 DDoS、端口嗅探）、电信诈骗、垃圾邮件轰炸或违反中泰两国法律法规的行为。如乙方违规操作导致 IP 被封或列入黑名单，甲方有权立即解除合同并不予退还剩余款项。
-              </div>
-
-              <div>
-                <strong className="text-neutral-900">第八条 电子签名效力与司法管辖：</strong>
-                双方确认本协议采用电子签名、数字时间戳及 SHA-256 哈希存证，具备与纸质合同完全同等的法律证明力。因本合同引起的争议，双方应友好协商，协商不成的，由泰王国清迈当地管辖法院审理。
-              </div>
+              {dynamicTerms.map((clause, cIdx) => (
+                <div key={cIdx}>
+                  <strong className="text-neutral-900">{chineseNumbers[cIdx] || `第${cIdx + 1}条`} {clause.title}</strong>
+                  {clause.body}
+                </div>
+              ))}
             </div>
 
             {/* Dual Signatures and Official Stamp */}
@@ -3768,7 +3972,7 @@ ${activeAdds.length > 0 ? `● 增值配套服务：${activeAdds.map(a => a.name
                     <img src={signatureData} alt="Customer Digital Signature" className="max-h-14 object-contain" />
                   ) : (
                     <div className="text-xs text-neutral-400 italic">
-                      [等待乙方在左侧画板完成签名]
+                      {viewMode === "customer" ? "[等待乙方在下方签署板完成实名签署]" : "[等待乙方在左侧画板完成签名]"}
                     </div>
                   )}
                 </div>
@@ -3828,8 +4032,356 @@ ${activeAdds.length > 0 ? `● 增值配套服务：${activeAdds.map(a => a.name
             </div>
           )}
         </div>
+
+        {/* Customer Mode: Party B Dedicated Electronic Signature Card */}
+        {viewMode === "customer" && (
+          <div className="w-full max-w-[820px] bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 rounded-2xl shadow-lg border border-neutral-200 dark:border-neutral-800 p-5 sm:p-7">
+            {isSigned ? (
+              <div className="flex flex-col items-center text-center gap-4 py-4">
+                <div className="w-14 h-14 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                  <CheckCircle2 className="w-8 h-8" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-black text-neutral-900 dark:text-white">
+                    电子协议已由双方实名签署生效！
+                  </h3>
+                  <p className="text-xs text-neutral-500 mt-1">
+                    签署人: <strong className="text-neutral-900 dark:text-white">{effectiveSignatoryDisplay}</strong> · 签署时间: {signedTimestamp || signingDateIso}
+                  </p>
+                  <p className="text-[11px] font-mono text-neutral-400 mt-0.5">
+                    防伪存证哈希: {contractHash}
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center justify-center gap-3 mt-2 w-full max-w-md">
+                  <button
+                    type="button"
+                    onClick={handleDownloadPdf}
+                    disabled={isExportingPdf}
+                    className="flex-1 min-w-[160px] py-2.5 px-4 rounded-xl font-bold text-xs bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 hover:bg-neutral-800 dark:hover:bg-neutral-100 flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer"
+                  >
+                    {isExportingPdf ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+                    <span>下载盖章版 PDF 合同</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setIsCertificateOpen(true)}
+                    className="py-2.5 px-4 rounded-xl font-bold text-xs bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center gap-1.5 shadow-xs transition-all cursor-pointer"
+                  >
+                    <Award className="w-4 h-4" />
+                    <span>查看存证证书</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleNativePrint}
+                    className="py-2.5 px-4 rounded-xl font-medium text-xs border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-800 dark:text-neutral-200 flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <Printer className="w-4 h-4" />
+                    <span>打印</span>
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-5">
+                <div className="border-b border-neutral-200 dark:border-neutral-800 pb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="w-6 h-6 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center">
+                      ✍️
+                    </span>
+                    <h3 className="text-base font-bold text-neutral-900 dark:text-white">
+                      客户认购方实名电子签署 (Party B Digital Signature)
+                    </h3>
+                  </div>
+                  <p className="text-xs text-neutral-500 mt-1">
+                    请核对您的签署人全名并在下方画板完成原笔迹手写签名，完成签署后合同即时生效并生成法律存证。
+                  </p>
+                </div>
+
+                {/* Customer Name & ID Number Confirmation */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+                      签署人真实姓名 / 授权代表 *
+                    </label>
+                    <input
+                      type="text"
+                      value={customerName}
+                      onChange={(e) => setCustomerName(e.target.value)}
+                      placeholder="例如: 张三 / Alex Chen"
+                      className="w-full bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl px-3 py-2 text-xs outline-hidden"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+                      证件号码 / 税号 (可选核对)
+                    </label>
+                    <input
+                      type="text"
+                      value={customerIdNumber}
+                      onChange={(e) => setCustomerIdNumber(e.target.value)}
+                      placeholder="身份证号 / 护照号 / 营业执照代码"
+                      className="w-full bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl px-3 py-2 text-xs outline-hidden"
+                    />
+                  </div>
+                </div>
+
+                {/* Signature Mode & Canvas */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-semibold text-neutral-800 dark:text-neutral-200 flex items-center gap-1.5">
+                      <PenTool className="w-3.5 h-3.5 text-blue-600" />
+                      <span>原笔迹电子签名画板</span>
+                    </label>
+                    <div className="flex items-center gap-1 bg-neutral-100 dark:bg-neutral-800 p-0.5 rounded-lg text-[11px]">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSigMode("draw");
+                          setSignatureData(null);
+                        }}
+                        className={`px-2 py-0.5 rounded transition-all cursor-pointer ${
+                          sigMode === "draw" ? "bg-white dark:bg-neutral-700 shadow-xs font-bold text-neutral-950 dark:text-white" : "text-neutral-500"
+                        }`}
+                      >
+                        手写签名
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSigMode("type");
+                          setSignatureData(null);
+                        }}
+                        className={`px-2 py-0.5 rounded transition-all cursor-pointer ${
+                          sigMode === "type" ? "bg-white dark:bg-neutral-700 shadow-xs font-bold text-neutral-950 dark:text-white" : "text-neutral-500"
+                        }`}
+                      >
+                        键盘输入
+                      </button>
+                    </div>
+                  </div>
+
+                  {sigMode === "draw" ? (
+                    <div className="flex flex-col gap-2">
+                      <div className="relative w-full h-40 bg-neutral-50 dark:bg-neutral-800/70 border border-neutral-300 dark:border-neutral-700 rounded-xl overflow-hidden touch-none select-none">
+                        <canvas
+                          ref={canvasRef}
+                          onMouseDown={startDrawing}
+                          onMouseMove={draw}
+                          onMouseUp={stopDrawing}
+                          onMouseLeave={stopDrawing}
+                          onTouchStart={startDrawing}
+                          onTouchMove={draw}
+                          onTouchEnd={stopDrawing}
+                          className="w-full h-full cursor-crosshair touch-none"
+                        />
+                        {!hasDrawn && (
+                          <div className="absolute inset-0 pointer-events-none flex flex-col items-center justify-center gap-1 text-xs text-neutral-400">
+                            <PenTool className="w-5 h-5 text-neutral-300 dark:text-neutral-600" />
+                            <span>在此区域使用手指或鼠标原笔迹书写签名</span>
+                          </div>
+                        )}
+                        <div className="absolute bottom-1 right-2 pointer-events-none text-[10px] text-neutral-400 font-mono">
+                          TIMESTAMP: {signingDateIso}
+                        </div>
+                      </div>
+
+                      <div className="flex justify-end">
+                        <button
+                          type="button"
+                          onClick={clearCanvas}
+                          className="flex items-center gap-1 text-[11px] text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200 px-2 py-1 rounded hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
+                        >
+                          <RotateCcw className="w-3 h-3" />
+                          <span>清除重签</span>
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col gap-2">
+                      <input
+                        type="text"
+                        value={typedSigText}
+                        onChange={(e) => handleTypedSignature(e.target.value)}
+                        placeholder="在此输入您的法定签名全名 (如: Zhang San)"
+                        className="w-full text-sm bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg px-3 py-2 outline-hidden"
+                      />
+                      <div className="h-20 bg-neutral-50 dark:bg-neutral-800/70 border border-neutral-200 dark:border-neutral-700 rounded-xl flex items-center justify-center">
+                        {signatureData ? (
+                          <img src={signatureData} alt="Signature Preview" className="h-14 object-contain" />
+                        ) : (
+                          <span className="text-xs text-neutral-400">电子签名艺术字体实时预览</span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Agreement Checkbox */}
+                <label className="flex items-start gap-2.5 cursor-pointer p-3 rounded-xl bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700">
+                  <input
+                    type="checkbox"
+                    checked={termsAgreed}
+                    onChange={(e) => setTermsAgreed(e.target.checked)}
+                    className="mt-0.5 rounded text-blue-600 focus:ring-0 w-4 h-4 cursor-pointer shrink-0"
+                  />
+                  <span className="text-xs text-neutral-600 dark:text-neutral-400 leading-snug">
+                    我已认真核对上述全部交付标的规格、费用明细及服务保障条款，确认信息真实准确，自愿签署本合同并承担相应法律责任。数字签名与时间戳具有完全同等法律效力。
+                  </span>
+                </label>
+
+                {/* Execute Button */}
+                <button
+                  type="button"
+                  onClick={handleExecuteContract}
+                  className="w-full py-3 px-4 rounded-xl font-bold text-sm bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <PenTool className="w-4 h-4" />
+                  <span>✍️ 确认并签署电子合同 (Sign & Execute Agreement)</span>
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </section>
       </main>
+
+      {/* --- Share Modal for Salesperson to Send to Customer --- */}
+      {isShareModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm print:hidden animate-in fade-in duration-200">
+          <div className="relative w-full max-w-xl bg-white dark:bg-neutral-900 rounded-3xl shadow-2xl border border-neutral-200 dark:border-neutral-800 p-6 sm:p-7 text-neutral-900 dark:text-neutral-100 max-h-[90vh] overflow-y-auto">
+            <button
+              onClick={() => setIsShareModalOpen(false)}
+              className="absolute top-5 right-5 p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition-colors cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-md">
+                <QrCode className="w-6 h-6" />
+              </div>
+              <div>
+                <div className="text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-950/80 text-blue-700 dark:text-blue-300 inline-block mb-0.5">
+                  EXCLUSIVE SIGNING LINK & QR
+                </div>
+                <h3 className="text-base sm:text-lg font-black text-neutral-950 dark:text-white">
+                  发送给客户 (专属签署链接与二维码)
+                </h3>
+              </div>
+            </div>
+
+            <p className="text-xs text-neutral-500 mb-4 leading-relaxed">
+              系统已按您当前的配置锁定方案标的与费率，并隐藏左侧配置栏。客户打开或扫码后仅看到定制文档，核对后直接原笔迹签署姓名。
+            </p>
+
+            {/* Plan Summary Badge */}
+            <div className="rounded-2xl bg-neutral-50 dark:bg-neutral-800/60 p-3.5 border border-neutral-200 dark:border-neutral-700 space-y-1.5 text-xs mb-4">
+              <div className="flex justify-between items-center pb-1.5 border-b border-neutral-200/60 dark:border-neutral-700">
+                <span className="text-neutral-500">签署客户:</span>
+                <span className="font-bold text-neutral-900 dark:text-white">{effectiveCustomerName}</span>
+              </div>
+              <div className="flex justify-between items-center pb-1.5 border-b border-neutral-200/60 dark:border-neutral-700">
+                <span className="text-neutral-500">签约首期总计:</span>
+                <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                  {currSym}{totalInitialPayment.toLocaleString()} ({currency === "CNY" ? numberToChineseRMB(totalInitialPayment) : numberToEnglishWords(totalInitialPayment, "THB")})
+                </span>
+              </div>
+              <div className="flex justify-between items-start pt-0.5">
+                <span className="text-neutral-500 shrink-0">标的概览:</span>
+                <span className="text-right text-neutral-700 dark:text-neutral-300 font-medium">
+                  {currentPlan ? currentPlan.name : "定制增值方案"} {chosenAiSubscription ? `· ${chosenAiSubscription.name}` : ""} {extraIpCount > 0 ? `· 独立IP ${1 + extraIpCount}个` : ""}
+                </span>
+              </div>
+            </div>
+
+            {/* QR Code Section */}
+            <div className="flex flex-col items-center justify-center p-4 bg-white dark:bg-neutral-950 rounded-2xl border border-neutral-200 dark:border-neutral-800 mb-4">
+              <div className="w-48 h-48 bg-white p-2 rounded-xl border border-neutral-200 shadow-xs flex items-center justify-center">
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=8&data=${encodeURIComponent(getCustomerSignUrl())}`}
+                  alt="Customer Signing QR Code"
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <span className="text-[11px] text-neutral-500 mt-2 flex items-center gap-1">
+                <Smartphone className="w-3.5 h-3.5 text-blue-600" />
+                客户使用微信或手机相机扫码，现场直接查阅并原笔迹签署
+              </span>
+            </div>
+
+            {/* Link Copy Box */}
+            <div className="mb-4">
+              <label className="block text-xs font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
+                专属在线签署链接 (锁定配置，仅客户签署)
+              </label>
+              <div className="flex items-center gap-1.5">
+                <input
+                  type="text"
+                  readOnly
+                  value={getCustomerSignUrl()}
+                  className="flex-1 bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl px-3 py-2 text-xs font-mono text-neutral-600 dark:text-neutral-300 outline-hidden select-all"
+                />
+                <button
+                  type="button"
+                  onClick={handleCopyShareModalLink}
+                  className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs whitespace-nowrap transition-colors flex items-center gap-1 cursor-pointer shrink-0"
+                >
+                  {copiedShareModalLink ? <Check className="w-3.5 h-3.5 text-white" /> : <Copy className="w-3.5 h-3.5" />}
+                  <span>{copiedShareModalLink ? "已复制" : "复制链接"}</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Invitation Text Box */}
+            <div className="mb-5">
+              <label className="block text-xs font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
+                微信 / 邮件专属签约通知文案
+              </label>
+              <textarea
+                readOnly
+                rows={4}
+                value={generateCustomerInvitationText()}
+                className="w-full bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl p-3 text-xs text-neutral-700 dark:text-neutral-300 leading-relaxed outline-hidden resize-none select-all font-sans"
+              />
+              <div className="flex justify-end mt-1.5">
+                <button
+                  type="button"
+                  onClick={handleCopyShareModalText}
+                  className="px-3 py-1.5 rounded-lg border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-700 dark:text-neutral-300 font-medium text-xs transition-colors flex items-center gap-1 cursor-pointer"
+                >
+                  {copiedShareModalText ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
+                  <span>{copiedShareModalText ? "已复制文案" : "复制文案"}</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Bottom Actions */}
+            <div className="flex items-center justify-between gap-3 pt-3 border-t border-neutral-200 dark:border-neutral-800">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsShareModalOpen(false);
+                  setViewMode("customer");
+                }}
+                className="px-3.5 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-neutral-800 dark:text-neutral-200 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+              >
+                <Eye className="w-3.5 h-3.5 text-blue-600" />
+                <span>直接以顾客视角预览</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setIsShareModalOpen(false)}
+                className="px-4 py-2 rounded-xl bg-neutral-900 hover:bg-neutral-800 dark:bg-white dark:hover:bg-neutral-100 text-white dark:text-neutral-900 text-xs font-bold transition-colors cursor-pointer"
+              >
+                完成
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* --- Certificate of Digital Execution Modal --- */}
       {isCertificateOpen && (
