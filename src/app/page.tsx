@@ -582,7 +582,7 @@ export default function CloudHomePage() {
               </div>
               <div className="p-3.5 rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-center">
                 <span className="text-[10px] font-mono uppercase tracking-wider text-neutral-400 block mb-0.5">清迈现地热线</span>
-                <a href="tel:+66987654321" className="text-xs font-medium text-neutral-900 dark:text-white font-mono hover:underline">+66 98 765 4321</a>
+                <a href="tel:+66927688255" className="text-xs font-medium text-neutral-900 dark:text-white font-mono hover:underline">+66 927-688255</a>
               </div>
             </div>
 
