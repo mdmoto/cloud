@@ -64,7 +64,7 @@ export default function CloudBundles({ onSelectBundle }: CloudBundlesProps) {
       priceNote: "开户费 ¥98 (首月一次性) · 每月立省 ¥200",
       popular: true,
       features: [
-        "1× 轻量共享型云电脑 (微主机，预装防关联指纹浏览器与日常值守环境) + VPN",
+        "1× 轻量共享型云电脑 (微主机 2-4核 / 4-8G，支持极速纯净 SSH 终端与轻量视窗) + VPN",
         "ChatGPT PLUS 或 Claude 会员 2 选 1 (已含每月官方会员订阅权益，专享纯净环境无惧封号降智，开箱即用)",
         "1× 独立海外原生静态商业 IP (100% 独享 Clean ASN, Fraud Score 0)",
         "海外账号专属 KYC 代充服务 (专享合规海外卡与手机号充值，免风控拒付)",
