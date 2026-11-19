@@ -78,7 +78,7 @@ export default function CloudBundles({ onSelectBundle }: CloudBundlesProps) {
       id: "cloud_workstation_full_pack",
       name: "云工位全服务包",
       badge: "DEV CHOICE · 极客旗舰首选",
-      tagline: "1V1 物理独享 Apple Silicon 算力、独立静态 IP、企业 VPN 与官方 AI 顶配会员全功能云工位。",
+      tagline: "1V1 物理独享 Apple Silicon 算力、独立静态 IP、企业 VPN 与官方 AI 会员全功能云工位。",
       monthlyPriceCNY: 888,
       annualPriceCNY: 710,
       originalPriceCNY: 1188,
